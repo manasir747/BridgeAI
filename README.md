@@ -108,7 +108,19 @@ The canonical result schema (`StructuredAnalysisResult` in `types/analysis.ts` &
 
 ---
 
-## 5. Security Architecture
+## 5. Visual Design & Motion System (Phase 2.5)
+
+BridgeAI features a warm, colorful, and lively SaaS interface designed for clarity and rapid triage during high-stakes situations:
+
+- **Warm Palette & Mesh Gradients:** Warm off-white foundation (`#f8fafc`) layered with ambient emerald, teal, and mint mesh gradients, deep navy text (`#0f172a`), and restrained lavender/coral accents.
+- **Floating Pill Glass Navigation:** Redesigned centered floating pill navbar with translucent glassmorphism (`backdrop-blur-md`), rounded active states, and real-time status indicators.
+- **Layered Floating Cards:** Generous rounded radii (`20–28px`), soft multi-layered shadows (`shadow-[0_12px_36px_rgba(15,23,42,0.06)]`), and hover lift effects.
+- **Hero & Visual Impact:** High-contrast expressive typography, subtle radial glow orbs, and interactive floating scenario teaser cards demonstrating live triage capabilities.
+- **Motion & Accessibility:** Micro-interactions (staggered entrances, card hover lifts, badge transitions, button scales) powered by CSS keyframes with full `@media (prefers-reduced-motion: reduce)` compliance.
+
+---
+
+## 6. Security Architecture
 
 - **Server-Side API Key Isolation:** `GEMINI_API_KEY` is loaded exclusively in server contexts via `lib/validation/env.schema.ts`. Initializing the Gemini client or reading the key in browser code immediately throws a fatal security exception. No secret variables are ever prefixed with `NEXT_PUBLIC_`.
 - **Sensible Input Limits:** Inputs are restricted to between 10 characters (rejecting empty spam) and 10,000 characters (preventing DoS and runaway token consumption).
@@ -189,12 +201,15 @@ npm run build
 | **Server-Side Gemini SDK Integration** | ✅ Implemented | Secured client, custom error classes, system prompt |
 | **API Endpoint (`POST /api/analyze`)** | ✅ Implemented | Request validation, sanitization, bounded inputs |
 | **Decoupled History Service Interface** | ✅ Implemented | LocalStorage & In-Memory storage engines |
-| **Accessible UI Primitives & Result Card** | ✅ Implemented | WCAG-compliant landmarks, badges, skip-link |
-| **Vitest & React Testing Library Suite** | ✅ Implemented | 34 automated tests across schemas, services, & UI |
-| **Interactive Dashboard & Triage Workbench** | 📋 Phase 2 | Full multi-item intake dashboard & search |
-| **Map Visualization & Geocoding** | 📋 Phase 2 | OpenStreetMap/Leaflet integration for hazard mapping |
-| **Multi-Agency Dispatch Routing** | 📋 Phase 2 | Direct export to CAP (Common Alerting Protocol) |
-| **Database & Multi-User Collaboration** | 📋 Phase 3 | Postgres/Supabase real-time coordination |
+| **Home: Value Proposition & 3-Step Pipeline** | ✅ Implemented | Real-world scenario presets, ethics policy, and CTA |
+| **Analyze: Intake Form & Field Photo Upload** | ✅ Implemented | Bounded input, sector hints, photo dropzone, loading state |
+| **Results: Triage Dossier & My Actions Tracker** | ✅ Implemented | Status toggle (pending/in progress/completed), notes, caveats |
+| **History: Search, Filter, Reopen & Backup** | ✅ Implemented | Full-text search, sector/urgency filters, metrics, JSON import/export |
+| **Visual Polish & Motion System (Phase 2.5)** | ✅ Implemented | Warm palette, floating pill glass navbar, layered cards, motion |
+| **Vitest & React Testing Library Suite** | ✅ Implemented | 56 automated unit and component tests passing |
+| **Map Visualization & Geocoding** | 📋 Phase 3 | OpenStreetMap/Leaflet integration for hazard mapping |
+| **Multi-Agency Dispatch Routing** | 📋 Phase 3 | Direct export to CAP (Common Alerting Protocol) |
+| **Database & Multi-User Collaboration** | 📋 Phase 4 | Postgres/Supabase real-time coordination |
 
 ---
 

@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { NavigationProvider } from '@/components/layout/NavigationContext';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,15 +40,17 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-900 dark:selection:text-emerald-200">
-        <Header />
-        <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
-          {children}
-        </main>
-        <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-          <div className="mx-auto max-w-7xl px-4">
-            BridgeAI Foundation • Open Source Societal Benefit Architecture
-          </div>
-        </footer>
+        <NavigationProvider>
+          <Header />
+          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
+            {children}
+          </main>
+          <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
+            <div className="mx-auto max-w-7xl px-4">
+              BridgeAI Foundation • Open Source Societal Benefit Architecture
+            </div>
+          </footer>
+        </NavigationProvider>
       </body>
     </html>
   );

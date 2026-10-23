@@ -8,14 +8,14 @@ export const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-primary text-primary-foreground shadow',
-        secondary: 'border-transparent bg-secondary text-secondary-foreground',
-        destructive: 'border-transparent bg-destructive text-destructive-foreground shadow',
-        outline: 'text-foreground',
-        critical: 'border-red-500/30 bg-red-500/15 text-red-700 dark:text-red-400 font-bold',
-        high: 'border-orange-500/30 bg-orange-500/15 text-orange-700 dark:text-orange-400 font-semibold',
-        medium: 'border-amber-500/30 bg-amber-500/15 text-amber-700 dark:text-amber-400',
-        low: 'border-emerald-500/30 bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+        default: 'border-transparent bg-emerald-600 text-white shadow-xs',
+        secondary: 'border-transparent bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
+        destructive: 'border-transparent bg-rose-600 text-white shadow-xs',
+        outline: 'border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xs',
+        critical: 'border-rose-500/30 bg-rose-500/12 text-rose-700 dark:text-rose-300 font-bold',
+        high: 'border-amber-500/30 bg-amber-500/12 text-amber-700 dark:text-amber-300 font-semibold',
+        medium: 'border-yellow-500/30 bg-yellow-500/12 text-yellow-800 dark:text-yellow-300',
+        low: 'border-emerald-500/30 bg-emerald-500/12 text-emerald-700 dark:text-emerald-300',
       },
     },
     defaultVariants: {
