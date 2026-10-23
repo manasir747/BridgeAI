@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AnalyzeSection } from '@/components/analyze/AnalyzeSection';
 import { HUMANITARIAN_PRESETS } from '@/lib/examples';
@@ -133,5 +133,91 @@ describe('AnalyzeSection Component', () => {
     fireEvent.click(resetBtn);
 
     expect(textarea.value).toBe('');
+  });
+
+  it('renders microphone button beside textarea and appends dictated speech with spacing', () => {
+    interface MockInstance {
+      start: ReturnType<typeof vi.fn>;
+      onstart: (() => void) | null;
+      onresult: ((e: {
+        resultIndex: number;
+        results: Array<{ isFinal: boolean; 0: { transcript: string } }>;
+      }) => void) | null;
+    }
+
+    let mockInstance: MockInstance | null = null;
+    function registerMockInstance(instance: MockInstance) {
+      mockInstance = instance;
+    }
+
+    class MockSpeechRecognition {
+      lang = 'en-IN';
+      continuous = false;
+      interimResults = false;
+      onstart: (() => void) | null = null;
+      onend: (() => void) | null = null;
+      onerror: ((e: { error: string }) => void) | null = null;
+      onresult: ((e: {
+        resultIndex: number;
+        results: Array<{ isFinal: boolean; 0: { transcript: string } }>;
+      }) => void) | null = null;
+      start = vi.fn().mockImplementation(() => {
+        this.onstart?.();
+      });
+      stop = vi.fn().mockImplementation(() => {
+        this.onend?.();
+      });
+      abort = vi.fn().mockImplementation(() => {
+        this.onend?.();
+      });
+      constructor() {
+        registerMockInstance(this);
+      }
+    }
+
+    const win = window as unknown as Record<string, unknown>;
+    const originalSR = win.SpeechRecognition;
+    win.SpeechRecognition = MockSpeechRecognition;
+
+    const handleSuccess = vi.fn();
+    render(<AnalyzeSection onAnalysisSuccess={handleSuccess} />);
+
+    // Check that voice dictation region and mic button are present
+    const micBtn = screen.getByRole('button', { name: /Start voice dictation/i });
+    expect(micBtn).toBeInTheDocument();
+
+    const textarea = screen.getByPlaceholderText(/Example: Emergency at St. Jude Clinic/i) as HTMLTextAreaElement;
+    fireEvent.change(textarea, { target: { value: 'Bridge collapsed on Route 9.' } });
+
+    // Click mic button to start dictation
+    fireEvent.click(micBtn);
+    const instance = mockInstance as unknown as MockInstance;
+    expect(instance.start).toHaveBeenCalled();
+
+    // Emit transcribed speech
+    act(() => {
+      instance.onresult?.({
+        resultIndex: 0,
+        results: [
+          {
+            isFinal: true,
+            0: { transcript: 'Send ambulances immediately.' },
+          },
+        ],
+      });
+    });
+
+    // Verify text is appended with a space and NOT replaced
+    expect(textarea.value).toBe('Bridge collapsed on Route 9. Send ambulances immediately.');
+
+    // Verify submission was NOT automatically triggered
+    expect(handleSuccess).not.toHaveBeenCalled();
+
+    // Verify character counter updated
+    expect(
+      screen.getByText(new RegExp(`${textarea.value.length} / 10000 chars`, 'i'))
+    ).toBeInTheDocument();
+
+    win.SpeechRecognition = originalSR;
   });
 });

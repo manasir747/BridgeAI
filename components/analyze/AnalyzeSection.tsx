@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ImageUpload, ImageAttachment } from './ImageUpload';
+import { VoiceDictation } from './VoiceDictation';
 import { AnalysisCategory, UrgencyLevel, StructuredAnalysisResult } from '@/types/analysis';
 import { INPUT_LIMITS, sanitizeInput } from '@/lib/validation/input.schema';
 import { CATEGORY_METADATA, HUMANITARIAN_PRESETS, ScenarioPreset, generateDemoSimulationResult } from '@/lib/examples';
@@ -74,6 +75,19 @@ export function AnalyzeSection({
     setClientError(null);
     setApiError(null);
     onClearPreset?.();
+  };
+
+  const handleVoiceTranscript = (transcript: string) => {
+    const trimmed = transcript.trim();
+    if (!trimmed) return;
+
+    setInput((prev) => {
+      if (!prev || !prev.trim()) {
+        return trimmed;
+      }
+      return `${prev.trimEnd()} ${trimmed}`;
+    });
+    setClientError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -286,19 +300,27 @@ export function AnalyzeSection({
               </span>
             </div>
 
-            <textarea
-              id="raw-problem-input"
-              name="rawInput"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              rows={7}
-              disabled={isLoading}
-              placeholder={t.analyze.placeholder}
-              className="w-full rounded-2xl border border-slate-700 bg-slate-950 p-5 sm:p-6 text-sm sm:text-base text-slate-100 placeholder:text-slate-500 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 focus-visible:border-emerald-500 transition-all resize-y leading-relaxed min-h-[170px]"
-              required
-              aria-invalid={!!clientError || isTooShort || isTooLong}
-              aria-describedby={clientError ? 'input-error-msg' : undefined}
-            />
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-start">
+              <textarea
+                id="raw-problem-input"
+                name="rawInput"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                rows={7}
+                disabled={isLoading}
+                placeholder={t.analyze.placeholder}
+                className="w-full flex-1 rounded-2xl border border-slate-700 bg-slate-950 p-5 sm:p-6 text-sm sm:text-base text-slate-100 placeholder:text-slate-500 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 focus-visible:border-emerald-500 transition-all resize-y leading-relaxed min-h-[170px]"
+                required
+                aria-invalid={!!clientError || isTooShort || isTooLong}
+                aria-describedby={clientError ? 'input-error-msg' : undefined}
+              />
+
+              <VoiceDictation
+                language={language}
+                onTranscript={handleVoiceTranscript}
+                disabled={isLoading}
+              />
+            </div>
           </div>
 
           {/* Category Selector Grid - Perfectly Balanced Grid with 10 Elements */}
