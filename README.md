@@ -206,6 +206,7 @@ npm run build
 | **Results: Triage Dossier & My Actions Tracker** | ✅ Implemented | Status toggle (pending/in progress/completed), notes, caveats |
 | **History: Search, Filter, Reopen & Backup** | ✅ Implemented | Full-text search, sector/urgency filters, metrics, JSON import/export |
 | **Visual Polish & Motion System (Phase 2.5)** | ✅ Implemented | Warm palette, floating pill glass navbar, layered cards, motion |
+| **Workspace & Dashboard Layout Refinement (Phase 2.6)** | ✅ Implemented | Large floating workspace, compact category selector, layered results dashboard, gallery archive |
 | **Vitest & React Testing Library Suite** | ✅ Implemented | 56 automated unit and component tests passing |
 | **Map Visualization & Geocoding** | 📋 Phase 3 | OpenStreetMap/Leaflet integration for hazard mapping |
 | **Multi-Agency Dispatch Routing** | 📋 Phase 3 | Direct export to CAP (Common Alerting Protocol) |

@@ -13,13 +13,14 @@ import {
   Layers,
   Sparkles,
   CheckCircle2,
+  Activity,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AnalysisResultCard } from '@/components/analysis/AnalysisResultCard';
 import { ActionStatus, StructuredAnalysisResult } from '@/types/analysis';
 import { getHistoryService } from '@/services/history/factory';
+import { HUMANITARIAN_PRESETS } from '@/lib/examples';
 
 interface ResultsSectionProps {
   result: StructuredAnalysisResult | null;
@@ -42,28 +43,87 @@ export function ResultsSection({
 
   if (!result) {
     return (
-      <div className="py-12 text-center max-w-lg mx-auto space-y-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/60 text-muted-foreground mx-auto">
-          <FileText className="h-8 w-8" aria-hidden="true" />
+      <div className="py-8 sm:py-12 max-w-2xl mx-auto space-y-8 animate-entrance text-center">
+        {/* Layered Empty State Illustration Composition */}
+        <div className="relative mx-auto flex h-36 w-36 items-center justify-center">
+          {/* Concentric Ambient Glow Rings */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500/20 via-teal-400/15 to-transparent blur-xl" />
+          <div className="absolute -inset-4 rounded-full border border-emerald-500/20 bg-emerald-500/5 animate-pulse-soft" />
+
+          {/* Floating Backing Card */}
+          <div className="absolute -rotate-6 transform rounded-[22px] border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 p-4 shadow-md w-24 h-24 flex items-center justify-center">
+            <Activity className="h-8 w-8 text-teal-500/60" />
+          </div>
+
+          {/* Floating Foreground Card */}
+          <div className="relative z-10 rotate-3 transform rounded-[24px] border border-emerald-500/30 bg-white/95 dark:bg-slate-900/95 p-5 shadow-xl w-24 h-24 flex items-center justify-center card-hover-lift">
+            <FileText className="h-10 w-10 text-emerald-600" aria-hidden="true" />
+            <div className="absolute -top-1.5 -right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xs">
+              <Sparkles className="h-3.5 w-3.5" />
+            </div>
+          </div>
         </div>
-        <div className="space-y-1">
-          <h2 className="text-xl font-bold tracking-tight text-foreground">
+
+        {/* Text Guidance */}
+        <div className="space-y-2 max-w-lg mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50">
             No Active Analysis Selected
           </h2>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             Analyze a new real-world crisis dispatch or select an existing analysis from your saved
-            history.
+            history to inspect structured findings, operational tasks, and confidence metrics.
           </p>
         </div>
-        <div className="flex items-center justify-center gap-3 pt-2">
-          <Button onClick={onNavigateToAnalyze} className="gap-2 text-xs font-semibold">
+
+        {/* Primary Call to Actions */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <Button
+            onClick={onNavigateToAnalyze}
+            size="lg"
+            className="gap-2 text-xs sm:text-sm font-bold rounded-2xl h-11 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20"
+          >
             <Sparkles className="h-4 w-4" />
             <span>Analyze a Problem</span>
           </Button>
-          <Button variant="outline" onClick={onNavigateToHistory} className="gap-2 text-xs font-semibold">
+
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={onNavigateToHistory}
+            className="gap-2 text-xs sm:text-sm font-semibold rounded-2xl h-11 px-5 border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             <Layers className="h-4 w-4" />
             <span>View Saved History</span>
           </Button>
+        </div>
+
+        {/* Clickable Quick Scenario Suggestions */}
+        <div className="pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-left space-y-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 block text-center">
+            Or open the triage intake tool with a field scenario:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {HUMANITARIAN_PRESETS.slice(0, 4).map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={onNavigateToAnalyze}
+                className="flex items-center justify-between p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 text-left transition-all card-hover-lift cursor-pointer"
+              >
+                <div className="overflow-hidden">
+                  <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                    {preset.title}
+                  </p>
+                  <p className="text-[11px] text-slate-500 truncate">
+                    {preset.rawInput.slice(0, 50)}...
+                  </p>
+                </div>
+                <Badge urgency={preset.urgencyHint} className="text-[10px] uppercase font-mono ml-2 shrink-0">
+                  {preset.urgencyHint}
+                </Badge>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -151,26 +211,39 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
   };
 
   return (
-    <div className="space-y-6 py-2 max-w-4xl mx-auto">
+    <div className="space-y-6 py-2 max-w-4xl mx-auto animate-entrance">
       {/* Top Action & Navigation Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onNavigateToAnalyze}
-          className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-          aria-label="Back to Analyze tool"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>New Analysis</span>
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 p-3.5 shadow-2xs backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onNavigateToAnalyze}
+            className="gap-1.5 text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl"
+            aria-label="Back to Analyze tool"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>New Analysis</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onNavigateToHistory}
+            className="gap-1.5 text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl"
+            aria-label="View previous history dossiers"
+          >
+            <Layers className="h-4 w-4" />
+            <span>Archive</span>
+          </Button>
+        </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleCopySummary}
-            className="text-xs gap-1.5"
+            className="text-xs gap-1.5 rounded-xl border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80"
             aria-label="Copy executive summary to clipboard"
           >
             {copied ? (
@@ -180,7 +253,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
               </>
             ) : (
               <>
-                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                <Copy className="h-3.5 w-3.5 text-slate-500" />
                 <span>Copy Summary</span>
               </>
             )}
@@ -190,23 +263,23 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             variant="outline"
             size="sm"
             onClick={handleExportJson}
-            className="text-xs gap-1.5"
+            className="text-xs gap-1.5 rounded-xl border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80"
             aria-label="Export analysis result as JSON document"
           >
-            <Download className="h-3.5 w-3.5 text-muted-foreground" />
+            <Download className="h-3.5 w-3.5 text-slate-500" />
             <span>Export JSON</span>
           </Button>
         </div>
       </div>
 
-      {/* Critical Verification & Grounding Policy Banner */}
+      {/* Critical Verification & Grounding Policy Notice */}
       <div
         role="region"
         aria-label="Verification Caveat"
-        className="rounded-2xl border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 p-4 sm:p-5 text-xs space-y-1.5 text-amber-900 dark:text-amber-200 shadow-2xs backdrop-blur-md"
+        className="rounded-[24px] border border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 p-5 text-xs space-y-1.5 text-amber-900 dark:text-amber-200 shadow-2xs backdrop-blur-md"
       >
-        <div className="flex items-center gap-2 font-bold text-sm">
-          <ShieldAlert className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
+        <div className="flex items-center gap-2 font-bold text-sm text-amber-800 dark:text-amber-300">
+          <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
           <span>Humanitarian Operational Grounding Notice</span>
         </div>
         <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
@@ -217,52 +290,50 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
         </p>
       </div>
 
-      {/* Interactive My Actions & Execution Tracker */}
+      {/* Interactive My Actions & Execution Progress Tracker */}
       {totalActions > 0 && (
-        <Card className="rounded-[26px] border-slate-200/80 dark:border-slate-800/80 p-5 sm:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.06)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-          <CardHeader className="p-0 pb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden="true" />
-                  <span>My Actions Tracker</span>
-                </CardTitle>
-                <CardDescription className="text-xs text-slate-500">
-                  {completedActions.length} of {totalActions} tasks marked completed ({progressPercent}%)
-                </CardDescription>
-              </div>
-
-              <Badge
-                variant="outline"
-                className={`text-xs font-mono font-semibold px-2.5 py-0.5 ${
-                  progressPercent === 100
-                    ? 'border-emerald-500 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10'
-                    : 'text-slate-600 dark:text-slate-400'
-                }`}
-              >
-                {progressPercent}% RESOLVED
-              </Badge>
+        <div className="rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/85 p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.3)] backdrop-blur-xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+                <span>My Actions Tracker</span>
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {completedActions.length} of {totalActions} tasks marked completed ({progressPercent}%)
+              </p>
             </div>
 
-            {/* Visual Progress Bar */}
-            <div
-              className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 mt-3 overflow-hidden p-0.5 border border-slate-200/50 dark:border-slate-700/50"
-              role="progressbar"
-              aria-valuenow={progressPercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`Action plan completion: ${progressPercent}%`}
+            <Badge
+              variant="outline"
+              className={`text-xs font-mono font-bold px-3 py-1 rounded-full ${
+                progressPercent === 100
+                  ? 'border-emerald-500 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10'
+                  : 'text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+              }`}
             >
-              <div
-                className="bg-gradient-to-r from-emerald-600 to-teal-500 h-1.5 transition-all duration-500 rounded-full shadow-xs"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </CardHeader>
-        </Card>
+              {progressPercent}% RESOLVED
+            </Badge>
+          </div>
+
+          {/* Visual Progress Bar */}
+          <div
+            className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200/60 dark:border-slate-700/60"
+            role="progressbar"
+            aria-valuenow={progressPercent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Action plan completion: ${progressPercent}%`}
+          >
+            <div
+              className="bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 h-2 transition-all duration-500 rounded-full shadow-xs"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
       )}
 
-      {/* Structured Analysis Card Display */}
+      {/* Structured Analysis Result Dashboard Card */}
       <AnalysisResultCard
         result={result}
         onActionToggle={handleActionToggle}
@@ -270,31 +341,29 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
       />
 
       {/* Responder Notes & Annotations Drawer */}
-      <Card className="rounded-[26px] border-slate-200/80 dark:border-slate-800/80 p-5 sm:p-6 shadow-[0_12px_35px_rgba(15,23,42,0.06)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-        <CardHeader className="p-0 pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-xs uppercase font-mono tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Tag className="h-3.5 w-3.5" />
-              <span>Dispatcher & Coordinator Annotations</span>
-            </CardTitle>
-            {!isEditingNotes && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsEditingNotes(true)}
-                className="h-7 text-xs text-primary"
-              >
-                Edit Notes
-              </Button>
-            )}
-          </div>
-        </CardHeader>
+      <div className="rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/85 p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.3)] backdrop-blur-xl space-y-3">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <h3 className="text-xs uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <Tag className="h-4 w-4 text-emerald-600" />
+            <span>Dispatcher & Coordinator Annotations</span>
+          </h3>
+          {!isEditingNotes && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditingNotes(true)}
+              className="h-8 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 rounded-xl"
+            >
+              Edit Notes
+            </Button>
+          )}
+        </div>
 
-        <CardContent className="space-y-3 pt-0">
+        <div>
           {isEditingNotes ? (
-            <div className="space-y-3">
+            <div className="space-y-3 pt-1">
               <div>
-                <label htmlFor="coordinator-notes" className="text-xs font-semibold text-foreground block mb-1">
+                <label htmlFor="coordinator-notes" className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Field Notes / Incident Log:
                 </label>
                 <textarea
@@ -302,13 +371,13 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                   value={noteInput}
                   onChange={(e) => setNoteInput(e.target.value)}
                   placeholder="e.g. Unit 4 en route. Radio confirmed at 10:15am."
-                  rows={2}
-                  className="w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  rows={3}
+                  className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 p-3 text-xs text-slate-900 dark:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
                 />
               </div>
 
               <div>
-                <label htmlFor="coordinator-tags" className="text-xs font-semibold text-foreground block mb-1">
+                <label htmlFor="coordinator-tags" className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Tags (comma separated):
                 </label>
                 <input
@@ -317,12 +386,12 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
                   placeholder="e.g. river-basin, medical, boat-required"
-                  className="w-full rounded-md border border-input bg-background p-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
                 />
               </div>
 
-              <div className="flex items-center gap-2">
-                <Button size="sm" onClick={handleSaveNotes} className="text-xs gap-1">
+              <div className="flex items-center gap-2 pt-1">
+                <Button size="sm" onClick={handleSaveNotes} className="text-xs font-bold gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">
                   <Save className="h-3.5 w-3.5" />
                   <span>Save Annotations</span>
                 </Button>
@@ -330,27 +399,27 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsEditingNotes(false)}
-                  className="text-xs text-muted-foreground"
+                  className="text-xs text-slate-500 rounded-xl"
                 >
                   Cancel
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground space-y-1">
+            <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2 pt-1">
               <p>
                 {noteInput ? (
                   <span>
-                    <strong>Notes:</strong> {noteInput}
+                    <strong className="text-slate-900 dark:text-slate-100">Notes:</strong> {noteInput}
                   </span>
                 ) : (
-                  <span className="italic">No field annotations attached yet.</span>
+                  <span className="italic text-slate-400">No field annotations attached yet.</span>
                 )}
               </p>
               {tagsInput && (
-                <div className="flex flex-wrap gap-1 pt-1">
+                <div className="flex flex-wrap gap-1.5 pt-1">
                   {tagsInput.split(',').map((tag, i) => (
-                    <span key={i} className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    <span key={i} className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                       #{tag.trim()}
                     </span>
                   ))}
@@ -360,13 +429,14 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
           )}
 
           {savedSuccess && (
-            <p className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-2">
               <Check className="h-3.5 w-3.5" />
               <span>Annotations saved to history!</span>
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
+
