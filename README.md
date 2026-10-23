@@ -1,220 +1,289 @@
 # BridgeAI — Societal Intelligence & Action Engine
 
-> **Phase 1 Foundation:** An architectural foundation for a Gemini-powered societal-benefit platform that converts messy, noisy real-world crisis and mutual aid inputs into structured, validated, actionable operations.
+**Turning unstructured crisis reports into structured, actionable intelligence.**
 
----
+[Live Demo](https://bridge-ai-tan.vercel.app) · [GitHub Repository](https://github.com/manasir747/BridgeAI)
 
-## 1. Problem Statement
+## Overview
 
-In humanitarian emergencies, climate disasters, and community mutual-aid scenarios, real-world communication is chaotic:
-- **Noisy channels:** Dispatchers and coordinators receive desperate, fragmented messages across SMS, social media, voice transcripts, and field radios.
-- **Critical delays:** Lifesaving details (trapped counts, medical dependencies, exact coordinates, urgent resources) are buried within informal, unstructured text.
-- **Coordination friction:** Aid teams often dispatch duplicate resources while overlooking critical information gaps (e.g., passable water depth, battery levels, patient mobility).
+BridgeAI is an AI-powered crisis intelligence and response-support platform that transforms messy, fragmented real-world dispatches into structured, validated, and prioritized information.
 
-**BridgeAI** bridges this gap using Google Gemini (`@google/genai`). It ingests raw, unstructured reports, extracts critical facts, evaluates urgency and credibility, pinpoints missing information, and outputs validated, prioritized action steps for responders.
+During humanitarian emergencies, natural disasters, and community assistance operations, critical details are often buried in unstructured messages. Responders may struggle to identify urgent needs, verify claims, locate affected populations, and determine what information is still missing.
 
----
+BridgeAI addresses this challenge using Google's Gemini API to analyze incoming reports, extract relevant information, assess urgency and uncertainty, identify critical information gaps, and recommend actionable next steps.
 
-## 2. Tech Stack
+The goal is to help responders understand a situation faster and make better-informed decisions.
 
-| Category | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Framework** | Next.js 16 (App Router) | Server-side execution, React 19, Turbopack |
-| **Language** | TypeScript (Strict Mode) | End-to-end type safety with zero suppressions |
-| **Styling & UI** | Tailwind CSS v4, Lucide React | Clean, responsive design with accessible focus rings |
-| **AI Engine** | Google Gemini API (`@google/genai`) | Server-side LLM inference (`gemini-2.5-flash`) |
-| **Validation** | Zod (v4) | Dual-layer validation for API inputs and AI output |
-| **Testing** | Vitest, React Testing Library, jsdom | Fast test runner and component accessibility tests |
-| **Code Quality**| ESLint (Flat Config) | Strict linting rules and best practices |
+> **Important:** BridgeAI is a decision-support tool. Its AI-generated assessments require human verification and should not replace professional emergency response procedures.
 
----
+## The Problem
 
-## 3. Architecture & Directory Structure
+Crisis communication is often fragmented and unreliable:
+
+- **Unstructured information:** Critical details arrive through informal messages, field reports, and voice transcripts.
+- **Delayed prioritization:** Urgent medical needs, affected population counts, and resource shortages can be overlooked.
+- **Information gaps:** Reports may lack precise locations, confirmed casualty counts, or essential operational details.
+- **Unverified claims:** Rumours and conflicting reports can lead to incorrect assumptions.
+- **Coordination challenges:** Responders need clear, prioritized actions rather than lengthy, unstructured messages.
+
+BridgeAI converts these reports into a structured operational overview that highlights what is known, what remains uncertain, and what needs attention.
+
+## Key Features
+
+### 1. AI-Powered Crisis Analysis
+Uses Google Gemini to interpret unstructured dispatches and generate structured analysis.
+
+### 2. Urgency Assessment
+Classifies incidents by urgency — Critical, High, Medium, or Low — and provides a severity score and rationale.
+
+### 3. Information Extraction
+Identifies relevant details, including:
+- Locations and addresses
+- Affected populations and vulnerable groups
+- Reported contacts and involved entities
+- Requested resources and assistance
+
+### 4. Critical Information Gaps
+Highlights missing details that responders may need to clarify before taking action.
+
+### 5. Claim Verification Support
+Distinguishes verified, unverified, conflicting, and follow-up-required claims based on the available information. AI assessments are not independent proof of a claim's truth.
+
+### 6. Prioritized Recommended Actions
+Organizes suggested operational tasks to help responders determine what may need attention first.
+
+### 7. Structured Results Dashboard
+Presents analysis in a readable triage dossier, with supporting evidence, uncertainty indicators, and actionable information.
+
+### 8. Analysis History
+Stores previous analyses in browser-local storage, with support for searching, filtering, reopening, and importing or exporting JSON backups.
+
+### 9. Multilingual Interface
+Provides language selection for supported interface languages, including English, Hindi, and Marathi. AI-generated analysis language depends on the selected language and the deployed implementation.
+
+### 10. Field-Friendly Intake
+Provides an input workflow for raw dispatch text, scenario/category selection, and field photo upload controls.
+
+## How It Works
+
+1. **Submit a report:** Enter an unstructured crisis dispatch or field report.
+2. **Validate the input:** The application validates and sanitizes the incoming text.
+3. **Analyze with AI:** The server-side Gemini integration interprets the report and extracts relevant details.
+4. **Validate the output:** Structured AI output is checked against the application's schema.
+5. **Review the results:** Examine urgency, extracted information, uncertainty, missing details, and recommended actions.
+6. **Track and revisit:** Save analyses locally, reopen previous reports, and manage recommended actions.
+
+## Technology Stack
+
+| Category | Technology |
+|---|---|
+| Framework | Next.js App Router |
+| Language | TypeScript, strict mode |
+| UI and Styling | React, Tailwind CSS, Lucide React |
+| AI Integration | Google Gemini API using `@google/genai` |
+| Validation | Zod |
+| Testing | Vitest, React Testing Library, jsdom |
+| Code Quality | ESLint |
+| Deployment | Vercel |
+| Storage | Browser LocalStorage and in-memory history service |
+
+## Architecture
+
+BridgeAI uses a single Next.js application. The frontend and analysis API are deployed together, avoiding the need for separate frontend and backend services.
 
 ```text
 BridgeAI/
 ├── app/
 │   ├── api/
 │   │   └── analyze/
-│   │       └── route.ts         # Secure server-only analysis POST endpoint
-│   ├── favicon.ico
-│   ├── globals.css              # Tailwind CSS imports & theme definitions
-│   ├── layout.tsx               # Root layout with accessibility skip link & header
-│   └── page.tsx                 # Foundation overview & contract preview
+│   │       └── route.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
 ├── components/
 │   ├── analysis/
-│   │   └── AnalysisResultCard.tsx # Accessible UI card for structured results
 │   ├── layout/
-│   │   └── Header.tsx           # Semantic header with status indicator
 │   └── ui/
-│       ├── badge.tsx            # Semantic urgency & status badges
-│       ├── button.tsx           # Accessible button with CVA variants
-│       └── card.tsx             # Composable card primitives
 ├── lib/
-│   ├── utils.ts                 # Class merging (`cn`), formatting helpers
-│   └── validation/
-│       ├── analysis.schema.ts   # Canonical Zod schema for analysis output
-│       ├── env.schema.ts        # Server-only environment validation & secret masking
-│       ├── index.ts             # Validation barrel export
-│       └── input.schema.ts      # Request validation (limits 10-10,000 chars, sanitization)
+│   ├── validation/
+│   └── utils.ts
+├── public/
 ├── services/
 │   ├── gemini/
-│   │   ├── analyzer.ts          # Orchestration service for Gemini model calls
-│   │   ├── client.ts            # Secure Gemini client with browser-context guards
-│   │   ├── index.ts             # Gemini service barrel export
-│   │   └── prompts.ts           # Humanitarian system instructions & prompt builder
 │   └── history/
-│       ├── factory.ts           # Environment-aware factory (localStorage vs memory)
-│       ├── index.ts             # History service barrel export
-│       ├── interface.ts         # IHistoryService contract for decoupled storage
-│       ├── local-storage.ts     # LocalStorage implementation with quota handling
-│       └── memory.ts            # In-memory implementation for SSR & testing
 ├── tests/
 │   ├── components/
-│   │   └── AnalysisResultCard.test.tsx # RTL component verification
 │   ├── lib/
-│   │   └── validation.test.ts   # Schemas, sanitization, and bounds testing
 │   ├── services/
-│   │   ├── gemini.test.ts       # Gemini client, prompts, and error mapping tests
-│   │   └── history.test.ts      # History CRUD, filtering, pagination, import/export
-│   └── setup.ts                 # Vitest matchers & jsdom polyfills
+│   └── setup.ts
 ├── types/
-│   ├── analysis.ts              # Core TypeScript interfaces for analysis contracts
-│   ├── history.ts               # Storage, query filters, and pagination types
-│   └── index.ts                 # Types barrel export
-├── .env.example                 # Documented environment variable template
-├── .gitignore                   # Strict rules guarding secrets and build artifacts
-├── eslint.config.mjs            # ESLint flat configuration
-├── package.json                 # Scripts and dependencies
-├── tsconfig.json                # Strict TypeScript configuration
-└── vitest.config.mts            # Vitest runner configuration with @ path alias
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── vitest.config.mts
 ```
 
----
+*This is a simplified overview. Individual files and subdirectories may evolve as the project develops.*
 
-## 4. Core Contracts
+### Core Components
 
-The canonical result schema (`StructuredAnalysisResult` in `types/analysis.ts` & `structuredAnalysisSchema` in `lib/validation/analysis.schema.ts`) validates:
+- **API route:** Receives analysis requests, validates input, and coordinates server-side processing.
+- **Gemini service:** Manages model calls, prompts, response processing, and error handling.
+- **Validation layer:** Defines input constraints and validates structured analysis results.
+- **History service:** Abstracts browser-local storage and in-memory persistence.
+- **Type contracts:** Define the structures used by the frontend, API, and analysis services.
 
-1. **`summary`**: Clear, concise overview of the incident.
-2. **`category`**: Standard taxonomy (`emergency_relief`, `healthcare_access`, `infrastructure_damage`, `food_water_security`, `shelter_housing`, `public_safety`, `missing_persons`, `community_assistance`, `other`).
-3. **`urgency`**: Triage level (`critical`, `high`, `medium`, `low`), numerical severity score (1–10), and rationale.
-4. **`extractedDetails`**: Granular extracted locations (with coordinates/addresses), identified entities/personnel, affected populations (estimated counts & vulnerable groups), contact information, and resource requests.
-5. **`missingInformation`**: Critical gaps in the input that responders must proactively clarify (with criticality ratings).
-6. **`verification`**: Claim verification assessment (`verified`, `unverified`, `needs_followup`, `conflicting`), confidence score (0.0–1.0), and reasoning.
-7. **`sources`**: Direct quotes from input text justifying facts and urgency assessments.
-8. **`recommendedActions`**: Prioritized operational tasks with target entities and execution status.
-9. **`metadata`**: Model version, latency (`processingTimeMs`), input length, sanitization flag, and timestamp.
+## Structured Analysis Contract
 
----
+BridgeAI's structured analysis includes:
 
-## 5. Visual Design & Motion System (Phase 2.5)
+| Field | Purpose |
+|---|---|
+| `summary` | Concise incident overview |
+| `category` | Standardized incident classification |
+| `urgency` | Severity level, numerical score, and rationale |
+| `extractedDetails` | Locations, entities, affected populations, contacts, and resource requests |
+| `missingInformation` | Critical details requiring clarification |
+| `verification` | Claim status, confidence, and reasoning |
+| `sources` | Supporting quotations from the original report |
+| `recommendedActions` | Prioritized operational tasks and statuses |
+| `metadata` | Processing time, model information, input length, and timestamp |
 
-BridgeAI features a warm, colorful, and lively SaaS interface designed for clarity and rapid triage during high-stakes situations:
+The output is validated using TypeScript contracts and Zod schemas to improve consistency and catch malformed responses.
 
-- **Warm Palette & Mesh Gradients:** Warm off-white foundation (`#f8fafc`) layered with ambient emerald, teal, and mint mesh gradients, deep navy text (`#0f172a`), and restrained lavender/coral accents.
-- **Floating Pill Glass Navigation:** Redesigned centered floating pill navbar with translucent glassmorphism (`backdrop-blur-md`), rounded active states, and real-time status indicators.
-- **Layered Floating Cards:** Generous rounded radii (`20–28px`), soft multi-layered shadows (`shadow-[0_12px_36px_rgba(15,23,42,0.06)]`), and hover lift effects.
-- **Hero & Visual Impact:** High-contrast expressive typography, subtle radial glow orbs, and interactive floating scenario teaser cards demonstrating live triage capabilities.
-- **Motion & Accessibility:** Micro-interactions (staggered entrances, card hover lifts, badge transitions, button scales) powered by CSS keyframes with full `@media (prefers-reduced-motion: reduce)` compliance.
+## Security and Responsible AI
 
----
+BridgeAI is designed with several security and reliability considerations:
 
-## 6. Security Architecture
+- **Server-side API key handling:** The Gemini API key must remain on the server and must never be exposed through `NEXT_PUBLIC_*` variables.
+- **Input validation:** Enforces configured text-length limits and rejects invalid requests.
+- **Input sanitization:** Normalizes text and removes configured unwanted control and obfuscation characters.
+- **Output validation:** Checks AI-generated results against the expected schema.
+- **Safe diagnostics:** Sensitive credentials should never appear in application logs or error messages.
+- **Uncertainty awareness:** Unverified claims and missing information are surfaced rather than automatically treated as facts.
+- **Human oversight:** AI recommendations are intended to support, not replace, trained responders.
 
-- **Server-Side API Key Isolation:** `GEMINI_API_KEY` is loaded exclusively in server contexts via `lib/validation/env.schema.ts`. Initializing the Gemini client or reading the key in browser code immediately throws a fatal security exception. No secret variables are ever prefixed with `NEXT_PUBLIC_`.
-- **Sensible Input Limits:** Inputs are restricted to between 10 characters (rejecting empty spam) and 10,000 characters (preventing DoS and runaway token consumption).
-- **Sanitization:** Raw text is normalized to Unicode NFC; non-printable control characters, null bytes, and zero-width obfuscation characters are stripped.
-- **Safe Secret Masking:** Utilities mask sensitive credentials (`maskSecret()`) to prevent accidental leaks in logs or diagnostics.
-- **Airtight `.gitignore`:** Strict ignore rules block `.env`, `.env*.local`, certificates (`*.pem`, `*.key`), and secrets directories, while tracking `.env.example`.
+**Privacy note:** Analysis history is stored locally in the browser in the current architecture. Reports sent for AI analysis are transmitted to the configured Gemini service. Do not submit sensitive personal or operational information unless its handling is appropriate for your use case.
 
----
-
-## 6. Storage Architecture (`IHistoryService`)
-
-Storage is decoupled through the `IHistoryService` interface (`services/history/interface.ts`):
-- **`LocalStorageHistoryService`**: Provides immediate client-side persistence without requiring a database in Phase 1. Features automated quota handling (evicting non-essential archived items if quota is reached) and backup import/export.
-- **`MemoryHistoryService`**: Fast in-memory implementation for automated tests, headless runtimes, and server-side rendering.
-- **`getHistoryService()`**: Factory providing seamless environment detection.
-
----
-
-## 7. Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js (v20+ recommended, tested on v26)
-- npm (v10+)
-- Google Gemini API Key ([Google AI Studio](https://aistudio.google.com/))
 
-### Installation
+- Node.js 20 or later recommended
+- npm
+- A Google Gemini API key from [Google AI Studio](https://aistudio.google.com/)
+
+### 1. Clone the repository
 
 ```bash
-# Clone repository
 git clone https://github.com/manasir747/BridgeAI.git
 cd BridgeAI
+```
 
-# Install dependencies
+### 2. Install dependencies
+
+```bash
 npm install
+```
 
-# Configure environment
+### 3. Configure environment variables
+
+Create your local environment file:
+
+```bash
 cp .env.example .env.local
 ```
 
-Open `.env.local` and add your Gemini API key:
+Add your Gemini API key to `.env.local`:
+
 ```env
-GEMINI_API_KEY="your-actual-gemini-api-key"
+GEMINI_API_KEY=your_actual_gemini_api_key
 ```
 
----
+Use your own key. Never commit `.env.local` or share your API key publicly.
 
-## 8. Development & Verification Commands
-
-All standard quality and testing commands are pre-configured:
+### 4. Start the development server
 
 ```bash
-# Run unit and component test suites (Vitest + RTL)
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Testing and Code Quality
+
+Run the following commands before contributing or submitting changes:
+
+```bash
+# Run automated tests
 npm run test
 
-# Run tests in interactive watch mode
+# Run tests in watch mode
 npm run test:watch
 
-# Run strict TypeScript typechecking
+# Check TypeScript types
 npm run typecheck
 
-# Run ESLint check
+# Run ESLint
 npm run lint
 
-# Start local Next.js development server
-npm run dev
-
-# Create optimized Next.js production build
+# Create a production build
 npm run build
 ```
 
+These commands depend on the scripts defined in `package.json`.
+
+## Deployment
+
+BridgeAI is deployed on Vercel.
+
+**Live application:** https://bridge-ai-tan.vercel.app
+
+To deploy your own instance:
+
+1. Fork or import the repository into your GitHub account.
+2. Import the repository into [Vercel](https://vercel.com/).
+3. Add `GEMINI_API_KEY` under the project's Environment Variables.
+4. Enable the variable for the deployment environments you intend to use.
+5. Deploy the application and test the analysis workflow.
+
+The frontend and `/api/analyze` endpoint run as part of the same Next.js deployment. A separate backend deployment is not required.
+
+## Roadmap
+
+| Feature | Status |
+|---|---|
+| Next.js application foundation | Implemented |
+| Structured analysis API | Implemented |
+| Gemini integration | Implemented |
+| Input and output validation | Implemented |
+| Urgency and severity assessment | Implemented |
+| Critical information gap detection | Implemented |
+| Claim verification support | Implemented |
+| Recommended action tracking | Implemented |
+| Local analysis history and JSON backup | Implemented |
+| Multilingual interface | Implemented / verify supported translations |
+| Interactive hazard maps | Planned |
+| Geospatial visualization and geocoding | Planned |
+| Multi-agency coordination | Planned |
+| Shared database and real-time collaboration | Planned |
+
+## Contributing
+
+Contributions, feedback, and ideas are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Implement and test your changes.
+4. Submit a pull request with a clear description of the improvement.
+
+Please avoid committing credentials, personal information, or real sensitive emergency reports.
+
+## License
+
+The repository should include a `LICENSE` file specifying the chosen open-source license before redistribution. If you intend to use Apache 2.0 or MIT, select one and add its corresponding license text.
+
 ---
 
-## 9. Roadmap: Implemented vs. Planned
-
-| Feature | Status | Notes |
-| :--- | :---: | :--- |
-| **Strict TypeScript Contracts & Zod Schemas** | ✅ Implemented | Full dual-layer type safety & schema validation |
-| **Server-Side Gemini SDK Integration** | ✅ Implemented | Secured client, custom error classes, system prompt |
-| **API Endpoint (`POST /api/analyze`)** | ✅ Implemented | Request validation, sanitization, bounded inputs |
-| **Decoupled History Service Interface** | ✅ Implemented | LocalStorage & In-Memory storage engines |
-| **Home: Value Proposition & 3-Step Pipeline** | ✅ Implemented | Real-world scenario presets, ethics policy, and CTA |
-| **Analyze: Intake Form & Field Photo Upload** | ✅ Implemented | Bounded input, sector hints, photo dropzone, loading state |
-| **Results: Triage Dossier & My Actions Tracker** | ✅ Implemented | Status toggle (pending/in progress/completed), notes, caveats |
-| **History: Search, Filter, Reopen & Backup** | ✅ Implemented | Full-text search, sector/urgency filters, metrics, JSON import/export |
-| **Visual Polish & Motion System (Phase 2.5)** | ✅ Implemented | Warm palette, floating pill glass navbar, layered cards, motion |
-| **Workspace & Dashboard Layout Refinement (Phase 2.6)** | ✅ Implemented | Large floating workspace, compact category selector, layered results dashboard, gallery archive |
-| **Functional Gemini Integration (Phase 3)** | ✅ Implemented | @google/genai SDK, prompt grounding, truthfulness directives, timeout & error handling |
-| **Vitest & React Testing Library Suite** | ✅ Implemented | 66 automated unit, route, and component tests passing |
-| **Map Visualization & Geocoding** | 📋 Phase 4 | OpenStreetMap/Leaflet integration for hazard mapping |
-| **Multi-Agency Dispatch Routing** | 📋 Phase 4 | Direct export to CAP (Common Alerting Protocol) |
-| **Database & Multi-User Collaboration** | 📋 Phase 5 | Postgres/Supabase real-time coordination |
-
----
-
-## 10. License
-
-Open-source under the Apache 2.0 / MIT License for humanitarian and societal benefit.
+**BridgeAI — Turning fragmented reports into clearer, more actionable crisis intelligence.**
