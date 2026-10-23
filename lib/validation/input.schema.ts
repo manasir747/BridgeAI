@@ -53,6 +53,7 @@ export const analysisRequestSchema = z.object({
   categoryHint: analysisCategorySchema.optional(),
   urgencyHint: urgencyLevelSchema.optional(),
   locale: z.string().max(10).optional(),
+  language: z.enum(['en', 'hi', 'mr']).optional(),
 });
 
 export type AnalysisRequestSchemaType = z.infer<typeof analysisRequestSchema>;

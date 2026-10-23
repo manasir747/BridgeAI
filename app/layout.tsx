@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import { Manrope, Geist_Mono } from 'next/font/google';
+import { Manrope, Geist_Mono, Noto_Sans_Devanagari } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { NavigationProvider } from '@/components/layout/NavigationContext';
+import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -13,6 +15,12 @@ const manrope = Manrope({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+  display: 'swap',
+});
+
+const notoSansDevanagari = Noto_Sans_Devanagari({
+  variable: '--font-devanagari',
+  subsets: ['devanagari'],
   display: 'swap',
 });
 
@@ -38,20 +46,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${geistMono.variable} ${notoSansDevanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-200">
-        <NavigationProvider>
-          <Header />
-          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none w-full">
-            {children}
-          </main>
-          <footer className="border-t border-slate-800/80 py-5 text-center text-xs text-slate-400">
-            <div className="w-full px-4 sm:px-6 lg:px-10">
-              BridgeAI Foundation • Open Source Societal Benefit Architecture
-            </div>
-          </footer>
-        </NavigationProvider>
+        <LanguageProvider>
+          <NavigationProvider>
+            <Header />
+            <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none w-full">
+              {children}
+            </main>
+            <Footer />
+          </NavigationProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

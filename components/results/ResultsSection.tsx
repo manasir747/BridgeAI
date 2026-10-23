@@ -21,6 +21,8 @@ import { AnalysisResultCard } from '@/components/analysis/AnalysisResultCard';
 import { ActionStatus, StructuredAnalysisResult } from '@/types/analysis';
 import { getHistoryService } from '@/services/history/factory';
 import { HUMANITARIAN_PRESETS } from '@/lib/examples';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { formatTemplate } from '@/lib/i18n';
 
 interface ResultsSectionProps {
   result: StructuredAnalysisResult | null;
@@ -35,6 +37,7 @@ export function ResultsSection({
   onNavigateToAnalyze,
   onNavigateToHistory,
 }: ResultsSectionProps) {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState<boolean>(false);
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
   const [noteInput, setNoteInput] = useState<string>('');
@@ -66,11 +69,10 @@ export function ResultsSection({
         {/* Text Guidance */}
         <div className="space-y-2 max-w-lg mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-            No Active Analysis Selected
+            {t.results.emptyTitle}
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Analyze a new real-world crisis dispatch or select an existing analysis from your saved
-            history to inspect structured findings, operational tasks, and confidence metrics.
+            {t.results.emptyDesc}
           </p>
         </div>
 
@@ -82,7 +84,7 @@ export function ResultsSection({
             className="gap-2 text-xs sm:text-sm font-bold rounded-xl h-10 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20"
           >
             <Sparkles className="h-4 w-4" />
-            <span>Analyze a Problem</span>
+            <span>{t.results.emptyCtaAnalyze}</span>
           </Button>
 
           <Button
@@ -92,14 +94,14 @@ export function ResultsSection({
             className="gap-2 text-xs sm:text-sm font-semibold rounded-xl h-10 px-4 border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-200"
           >
             <Layers className="h-4 w-4" />
-            <span>View Saved History</span>
+            <span>{t.results.emptyCtaHistory}</span>
           </Button>
         </div>
 
         {/* Clickable Quick Scenario Suggestions */}
         <div className="pt-4 border-t border-slate-800 text-left space-y-2.5">
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 block text-center">
-            Or open the triage intake tool with a field scenario:
+            {t.results.orLoadPreset}
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {HUMANITARIAN_PRESETS.slice(0, 4).map((preset) => (
@@ -118,7 +120,7 @@ export function ResultsSection({
                   </p>
                 </div>
                 <Badge urgency={preset.urgencyHint} className="text-[10px] uppercase font-bold ml-2 shrink-0">
-                  {preset.urgencyHint}
+                  {t.urgency[preset.urgencyHint] || preset.urgencyHint}
                 </Badge>
               </button>
             ))}
@@ -219,10 +221,10 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             size="sm"
             onClick={onNavigateToAnalyze}
             className="gap-1.5 text-xs text-slate-300 hover:text-white rounded-xl h-8"
-            aria-label="Back to Analyze tool"
+            aria-label={t.results.newAnalysisAria}
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            <span>New Analysis</span>
+            <span>{t.results.newAnalysis}</span>
           </Button>
 
           <Button
@@ -230,10 +232,10 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             size="sm"
             onClick={onNavigateToHistory}
             className="gap-1.5 text-xs text-slate-300 hover:text-white rounded-xl h-8"
-            aria-label="View previous history dossiers"
+            aria-label={t.results.archiveAria}
           >
             <Layers className="h-3.5 w-3.5" />
-            <span>Archive</span>
+            <span>{t.results.archive}</span>
           </Button>
         </div>
 
@@ -243,17 +245,17 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             size="sm"
             onClick={handleCopySummary}
             className="text-xs gap-1.5 rounded-xl border-slate-700 bg-slate-800/80 text-slate-200 h-8"
-            aria-label="Copy executive summary to clipboard"
+            aria-label={t.results.copySummaryAria}
           >
             {copied ? (
               <>
                 <Check className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-emerald-400 font-semibold">Copied!</span>
+                <span className="text-emerald-400 font-semibold">{t.results.copied}</span>
               </>
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5 text-slate-400" />
-                <span>Copy Summary</span>
+                <span>{t.results.copySummary}</span>
               </>
             )}
           </Button>
@@ -263,10 +265,10 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             size="sm"
             onClick={handleExportJson}
             className="text-xs gap-1.5 rounded-xl border-slate-700 bg-slate-800/80 text-slate-200 h-8"
-            aria-label="Export analysis result as JSON document"
+            aria-label={t.results.exportJsonAria}
           >
             <Download className="h-3.5 w-3.5 text-slate-400" />
-            <span>Export JSON</span>
+            <span>{t.results.exportJson}</span>
           </Button>
         </div>
       </div>
@@ -274,18 +276,15 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
       {/* Critical Verification & Grounding Policy Notice */}
       <div
         role="region"
-        aria-label="Verification Caveat"
+        aria-label={t.results.noticeAria}
         className="rounded-2xl border border-amber-500/25 bg-amber-950/20 p-4 text-xs space-y-1 text-amber-200 shadow-xs backdrop-blur-md"
       >
         <div className="flex items-center gap-2 font-bold text-sm text-amber-300">
           <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0" aria-hidden="true" />
-          <span>Humanitarian Operational Grounding Notice</span>
+          <span>{t.results.groundingNoticeTitle}</span>
         </div>
         <p className="text-slate-300 text-xs leading-relaxed">
-          This report is machine-generated by Google Gemini to assist triage intake. AI claims, headcounts,
-          and suggested coordinates are <strong>never independently verified</strong> until confirmed by
-          on-scene emergency personnel. Always reconcile missing information before committing life-safety
-          assets.
+          {t.results.groundingNoticeText}
         </p>
       </div>
 
@@ -296,10 +295,14 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             <div>
               <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" aria-hidden="true" />
-                <span>My Actions Tracker</span>
+                <span>{t.results.myActions}</span>
               </h3>
               <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
-                {completedActions.length} of {totalActions} tasks marked completed ({progressPercent}%)
+                {formatTemplate(t.results.tasksCompleted, {
+                  completed: completedActions.length,
+                  total: totalActions,
+                  percent: progressPercent,
+                })}
               </p>
             </div>
 
@@ -311,7 +314,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                   : 'text-slate-300 border-slate-700 bg-slate-800'
               }`}
             >
-              {progressPercent}% RESOLVED
+              {formatTemplate(t.results.resolved, { percent: progressPercent })}
             </Badge>
           </div>
 
@@ -322,7 +325,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             aria-valuenow={progressPercent}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label={`Action plan completion: ${progressPercent}%`}
+            aria-label={formatTemplate(t.results.progressBarAria, { percent: progressPercent })}
           >
             <div
               className="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 h-1.5 transition-all duration-500 rounded-full shadow-xs"
@@ -344,7 +347,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
         <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
           <h3 className="text-xs uppercase font-bold tracking-wider text-slate-400 flex items-center gap-2">
             <Tag className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Dispatcher & Coordinator Annotations</span>
+            <span>{t.results.annotationsTitle}</span>
           </h3>
           {!isEditingNotes && (
             <Button
@@ -353,7 +356,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
               onClick={() => setIsEditingNotes(true)}
               className="h-7 text-xs font-semibold text-emerald-400 hover:text-emerald-300 rounded-lg px-2"
             >
-              Edit Notes
+              {t.results.editNotes}
             </Button>
           )}
         </div>
@@ -363,13 +366,13 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
             <div className="space-y-3 pt-1">
               <div>
                 <label htmlFor="coordinator-notes" className="text-xs font-bold text-slate-300 block mb-1">
-                  Field Notes / Incident Log:
+                  {t.results.fieldNotesLabel}
                 </label>
                 <textarea
                   id="coordinator-notes"
                   value={noteInput}
                   onChange={(e) => setNoteInput(e.target.value)}
-                  placeholder="e.g. Unit 4 en route. Radio confirmed at 10:15am."
+                  placeholder={t.results.fieldNotesPlaceholder}
                   rows={3}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 p-3 text-xs text-slate-100 placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 leading-relaxed"
                 />
@@ -377,14 +380,14 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
 
               <div>
                 <label htmlFor="coordinator-tags" className="text-xs font-bold text-slate-300 block mb-1">
-                  Tags (comma separated):
+                  {t.results.tagsLabel}
                 </label>
                 <input
                   id="coordinator-tags"
                   type="text"
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
-                  placeholder="e.g. river-basin, medical, boat-required"
+                  placeholder={t.results.tagsPlaceholder}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
                 />
               </div>
@@ -392,7 +395,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
               <div className="flex items-center gap-2 pt-1">
                 <Button size="sm" onClick={handleSaveNotes} className="text-xs font-bold gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white h-8">
                   <Save className="h-3.5 w-3.5" />
-                  <span>Save Annotations</span>
+                  <span>{t.results.saveNotes}</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -400,7 +403,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                   onClick={() => setIsEditingNotes(false)}
                   className="text-xs text-slate-400 hover:text-slate-200 rounded-xl h-8"
                 >
-                  Cancel
+                  {t.common.cancel}
                 </Button>
               </div>
             </div>
@@ -430,7 +433,7 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
           {savedSuccess && (
             <p className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 mt-2">
               <Check className="h-3.5 w-3.5" />
-              <span>Annotations saved to history!</span>
+              <span>{t.results.savedSuccess}</span>
             </p>
           )}
         </div>

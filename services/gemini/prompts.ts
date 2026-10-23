@@ -53,7 +53,12 @@ export function buildAnalysisPrompt(request: AnalysisRequest): string {
     prompt += `\nUser Urgency Hint: ${request.urgencyHint}`;
   }
 
-  if (request.locale) {
+  const lang = request.language || (request.locale === 'hi' ? 'hi' : request.locale === 'mr' ? 'mr' : undefined);
+  if (lang === 'hi') {
+    prompt += `\nTarget Output Language: Hindi (हिन्दी). Generate human-readable summaries, urgency reasoning, verification reasoning, action titles/descriptions, and missing information descriptions in natural, fluent Hindi. Preserve original names, addresses, landmarks, phone numbers, and technical identifiers verbatim. CRITICAL: All enum values (category, urgency.level, verification.status, action.priority, action.status, entity.type) MUST strictly remain the exact specified English enum keys in lowercase.`;
+  } else if (lang === 'mr') {
+    prompt += `\nTarget Output Language: Marathi (मराठी). Generate human-readable summaries, urgency reasoning, verification reasoning, action titles/descriptions, and missing information descriptions in natural, fluent Marathi. Preserve original names, addresses, landmarks, phone numbers, and technical identifiers verbatim. CRITICAL: All enum values (category, urgency.level, verification.status, action.priority, action.status, entity.type) MUST strictly remain the exact specified English enum keys in lowercase.`;
+  } else if (request.locale) {
     prompt += `\nTarget Locale: ${request.locale}`;
   }
 

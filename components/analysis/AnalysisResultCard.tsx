@@ -22,6 +22,7 @@ import {
 import { ActionStatus, StructuredAnalysisResult } from '@/types/analysis';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export interface AnalysisResultCardProps {
   result: StructuredAnalysisResult;
@@ -36,6 +37,7 @@ export function AnalysisResultCard({
   onActionToggle,
   isActionInteractive = false,
 }: AnalysisResultCardProps) {
+  const { t } = useLanguage();
   const [showSecondaryDetails, setShowSecondaryDetails] = useState<boolean>(false);
 
   const {
@@ -60,25 +62,25 @@ export function AnalysisResultCard({
         return {
           icon: <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />,
           classes: 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30',
-          label: 'Verified Fact',
+          label: t.verification.verified,
         };
       case 'unverified':
         return {
           icon: <AlertTriangle className="h-3.5 w-3.5 text-rose-400" aria-hidden="true" />,
           classes: 'bg-rose-950/40 text-rose-300 border-rose-500/30',
-          label: 'Unverified Claim',
+          label: t.verification.unverified,
         };
       case 'conflicting':
         return {
           icon: <AlertTriangle className="h-3.5 w-3.5 text-orange-400" aria-hidden="true" />,
           classes: 'bg-orange-950/40 text-orange-300 border-orange-500/30',
-          label: 'Conflicting Reports',
+          label: t.verification.conflicting,
         };
       default:
         return {
           icon: <HelpCircle className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />,
           classes: 'bg-amber-950/40 text-amber-300 border-amber-500/30',
-          label: 'Needs Follow-up',
+          label: t.verification.needs_followup,
         };
     }
   };
@@ -106,7 +108,7 @@ export function AnalysisResultCard({
                 variant="outline"
                 className="text-[11px] font-bold px-2.5 py-0.5 rounded-full border-slate-700 text-slate-300 bg-slate-800/80 tracking-wider"
               >
-                {formattedCategory}
+                {(t.categories[category as keyof typeof t.categories] || formattedCategory).toUpperCase()}
               </Badge>
 
               <Badge
@@ -114,7 +116,7 @@ export function AnalysisResultCard({
                 aria-label={`Urgency level: ${urgency.level}`}
                 className="text-xs font-bold px-3 py-0.5 rounded-full shadow-xs"
               >
-                URGENCY: {urgency.level.toUpperCase()} <span className="font-mono">({urgency.score}/10)</span>
+                {t.urgency.urgencyPrefix} {(t.urgency[urgency.level] || urgency.level).toUpperCase()} <span className="font-mono">({urgency.score}/10)</span>
               </Badge>
 
               <span
@@ -122,9 +124,9 @@ export function AnalysisResultCard({
                 aria-label={`Verification status: ${verification.status}`}
               >
                 {verBadge.icon}
-                <span className="capitalize">{verification.status.replace(/_/g, ' ')}</span>
+                <span className="capitalize">{verBadge.label}</span>
                 <span className="text-[11px] opacity-75 font-mono">
-                  ({Math.round(verification.confidenceScore * 100)}% conf)
+                  ({Math.round(verification.confidenceScore * 100)}% {t.verification.conf})
                 </span>
               </span>
             </div>
@@ -145,7 +147,7 @@ export function AnalysisResultCard({
             <div className="flex items-start gap-2.5 rounded-xl bg-slate-950/60 p-3 border border-slate-800 text-xs sm:text-sm text-slate-300 leading-relaxed">
               <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" aria-hidden="true" />
               <p>
-                <strong className="font-semibold text-slate-100">Reasoning:</strong> {urgency.reasoning}
+                <strong className="font-semibold text-slate-100">{t.card.reasoning}</strong> {urgency.reasoning}
               </p>
             </div>
           </div>
@@ -160,16 +162,16 @@ export function AnalysisResultCard({
             <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-emerald-400" />
-                <span>Locations & Ground Contacts</span>
+                <span>{t.card.locationsTitle}</span>
               </h3>
-              <span className="text-[11px] text-slate-500">Field Targets</span>
+              <span className="text-[11px] text-slate-500">{t.card.fieldTargets}</span>
             </div>
 
             {/* Locations */}
             {extractedDetails.locations.length > 0 ? (
               <div className="space-y-1.5 text-xs">
                 <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
-                  Identified Locations:
+                  {t.card.identifiedLocations}
                 </span>
                 <div className="space-y-1">
                   {extractedDetails.locations.map((loc, idx) => (
@@ -189,14 +191,14 @@ export function AnalysisResultCard({
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic">No specific locations detected in dispatch.</p>
+              <p className="text-xs text-slate-500 italic">{t.card.noLocations}</p>
             )}
 
             {/* Entities & Roles */}
             {extractedDetails.entities.length > 0 && (
               <div className="space-y-1 text-xs pt-1">
                 <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
-                  Entities Involved:
+                  {t.card.entitiesInvolved}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {extractedDetails.entities.map((ent, idx) => (
@@ -217,7 +219,7 @@ export function AnalysisResultCard({
           {extractedDetails.contactInfo.length > 0 && (
             <div className="pt-2 border-t border-slate-800/70 text-xs">
               <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px] mb-1">
-                Communication Channels:
+                {t.card.commChannels}
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {extractedDetails.contactInfo.map((contact, idx) => (
@@ -245,9 +247,9 @@ export function AnalysisResultCard({
             <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-teal-400 flex items-center gap-2">
                 <Users className="h-4 w-4 text-teal-400" />
-                <span>Affected Cohorts & Supplies</span>
+                <span>{t.card.affectedTitle}</span>
               </h3>
-              <span className="text-[11px] text-slate-500">Demographics & Logistics</span>
+              <span className="text-[11px] text-slate-500">{t.card.demographics}</span>
             </div>
 
             {/* Affected Population */}
@@ -255,11 +257,11 @@ export function AnalysisResultCard({
               <div className="rounded-xl bg-slate-950/50 p-2.5 border border-slate-800/80 space-y-1 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-slate-200">
-                    Population Estimate:
+                    {t.card.populationEstimate}
                   </span>
                   {extractedDetails.affectedPopulation.countEstimate !== undefined && (
                     <span className="rounded-full bg-sky-950/40 border border-sky-500/30 px-2 py-0.5 text-[11px] font-bold text-sky-300 font-mono">
-                      ~{extractedDetails.affectedPopulation.countEstimate} people
+                      ~{extractedDetails.affectedPopulation.countEstimate} {t.card.people}
                     </span>
                   )}
                 </div>
@@ -276,21 +278,21 @@ export function AnalysisResultCard({
                           key={i}
                           className="rounded bg-rose-950/30 border border-rose-500/20 px-1.5 py-0.2 text-[10px] text-rose-300"
                         >
-                          Vulnerable: {vg}
+                          {t.card.vulnerable} {vg}
                         </span>
                       ))}
                     </div>
                   )}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic">No specific population count indicated.</p>
+              <p className="text-xs text-slate-500 italic">{t.card.noPopulation}</p>
             )}
 
             {/* Resource Needs */}
             {extractedDetails.resourceNeeds.length > 0 ? (
               <div className="space-y-1.5 text-xs">
                 <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
-                  Requested Resource Needs:
+                  {t.card.resourceNeeds}
                 </span>
                 <div className="space-y-1">
                   {extractedDetails.resourceNeeds.map((resItem, idx) => (
@@ -314,7 +316,7 @@ export function AnalysisResultCard({
                           urgency={resItem.urgency}
                           className="text-[10px] font-bold px-2 py-0.2 uppercase"
                         >
-                          {resItem.urgency}
+                          {t.urgency[resItem.urgency] || resItem.urgency}
                         </Badge>
                       )}
                     </div>
@@ -322,7 +324,7 @@ export function AnalysisResultCard({
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-500 italic">No distinct supply requests flagged.</p>
+              <p className="text-xs text-slate-500 italic">{t.card.noResources}</p>
             )}
           </div>
 
@@ -348,11 +350,11 @@ export function AnalysisResultCard({
                 id={`missing-info-title-${result.id}`}
                 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-300"
               >
-                Critical Information Gaps (Confirm Before Committing Assets)
+                {t.card.infoGapsTitle}
               </h3>
             </div>
             <span className="text-[11px] text-amber-400/80 font-semibold">
-              {missingInformation.length} Actionable Gaps
+              {missingInformation.length} {t.card.infoGapsSubtitle}
             </span>
           </div>
 
@@ -397,12 +399,12 @@ export function AnalysisResultCard({
                 id={`actions-title-${result.id}`}
                 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-100"
               >
-                Prioritized Action Plan
+                {t.card.actionsTitle}
               </h3>
             </div>
             {isActionInteractive && (
               <span className="text-[11px] text-slate-400">
-                Click status pill to cycle: Pending → In Progress → Completed
+                {t.card.actionToggleHelp}
               </span>
             )}
           </div>
@@ -430,7 +432,7 @@ export function AnalysisResultCard({
                       </span>
                       {action.targetEntity && (
                         <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-[11px] font-medium text-slate-300 border border-slate-700">
-                          Target: {action.targetEntity}
+                          {t.card.target} {action.targetEntity}
                         </span>
                       )}
                     </div>
@@ -485,10 +487,10 @@ export function AnalysisResultCard({
         >
           <div className="flex items-center gap-2">
             <Quote className="h-4 w-4 text-teal-400" />
-            <span>Verification Rationale & Source Excerpts</span>
+            <span>{t.card.evidenceTitle}</span>
           </div>
           <div className="flex items-center gap-1 text-[11px] text-emerald-400 font-semibold">
-            <span>{showSecondaryDetails ? 'Hide' : 'Inspect'}</span>
+            <span>{showSecondaryDetails ? t.card.hide : t.card.inspect}</span>
             {showSecondaryDetails ? (
               <ChevronUp className="h-3.5 w-3.5" />
             ) : (

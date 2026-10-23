@@ -17,14 +17,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Headings use Manrope */
+/* Headings use Manrope with Devanagari fallback */
 h1, h2, h3, h4, h5, h6, .font-heading, .heading-serif {
-  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif !important;
 }
 
 h1 *, h2 *, h3 *, .font-heading *, .heading-serif * {
@@ -33,13 +33,13 @@ h1 *, h2 *, h3 *, .font-heading *, .heading-serif * {
 
 /* All headings, body text, navigation, buttons, forms, labels, badges, cards, and analysis results use Manrope */
 body, button, input, select, textarea, optgroup, label, table, th, td, span, p, a, div, li, ul, ol {
-  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
   letter-spacing: -0.008em;
   min-height: 100vh;
   /* Dark navy ambient gradient background */
@@ -52,9 +52,19 @@ body {
   background-attachment: fixed;
 }
 
-/* Enforce Manrope globally on all form controls, buttons, text inputs */
+/* Ensure form controls and dynamically rendered content inherit Manrope and Devanagari fallbacks */
 button, input, select, textarea, optgroup {
-  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif !important;
+  font-family: var(--font-manrope), var(--font-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, sans-serif !important;
+}
+
+/* Ensure generous line height and vertical space for Devanagari text */
+:lang(hi), :lang(mr), [lang="hi"], [lang="mr"] {
+  line-height: 1.62;
+}
+
+:lang(hi) h1, :lang(hi) h2, :lang(hi) h3,
+:lang(mr) h1, :lang(mr) h2, :lang(mr) h3 {
+  line-height: 1.35;
 }
 
 /* Geist Mono: Timestamps, counters, technical identifiers, and diagnostic metadata only */

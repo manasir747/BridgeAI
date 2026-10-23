@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HUMANITARIAN_PRESETS, ScenarioPreset } from '@/lib/examples';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { formatTemplate } from '@/lib/i18n';
 
 interface HomeSectionProps {
   onNavigateToAnalyze: (preset?: ScenarioPreset) => void;
@@ -29,6 +31,8 @@ interface HomeSectionProps {
 }
 
 export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSectionProps) {
+  const { t } = useLanguage();
+
   const getPresetIcon = (iconName: string) => {
     switch (iconName) {
       case 'Ambulance':
@@ -62,24 +66,21 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
           <div className="lg:col-span-7 space-y-4 text-left">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3 py-0.5 text-xs font-semibold text-emerald-300">
               <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-              <span>Gemini-Powered Humanitarian Intelligence</span>
+              <span>{t.home.badge}</span>
             </div>
 
             <h1
               id="hero-title"
               className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight text-slate-100 leading-[1.18]"
             >
-              Turn Messy Crisis Reports into{' '}
+              {t.home.heroTitlePre}{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
-                Validated, Actionable Relief
+                {t.home.heroTitleHighlight}
               </span>
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-3xl">
-              During disasters and mutual-aid emergencies, real-world communication is chaotic.
-              BridgeAI cuts through panic and noise: transforming unstructured SMS, radio transcripts, and
-              social alerts into structured triage summaries, verified facts, resource needs, and prioritized
-              operational actions.
+              {t.home.heroDesc}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -88,9 +89,9 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                 size="lg"
                 onClick={() => onNavigateToAnalyze()}
                 className="font-bold shadow-md shadow-emerald-600/25 hover:shadow-lg hover:shadow-emerald-600/35 gap-2 px-5 h-11 rounded-xl text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white cursor-pointer"
-                aria-label="Analyze a Problem - Open intake analysis tool"
+                aria-label={t.home.ctaAnalyzeAria}
               >
-                <span>Analyze a Problem</span>
+                <span>{t.home.ctaAnalyze}</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
 
@@ -99,10 +100,10 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                 size="lg"
                 onClick={onNavigateToHistory}
                 className="gap-2 h-11 px-4 rounded-xl text-sm font-semibold border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-200 cursor-pointer"
-                aria-label="View previous analysis history"
+                aria-label={t.home.ctaHistoryAria}
               >
                 <Layers className="h-4 w-4 text-slate-400" />
-                <span>Browse Saved History</span>
+                <span>{t.home.ctaHistory}</span>
               </Button>
             </div>
           </div>
@@ -116,20 +117,20 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                   <div className="flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
                     <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wide">
-                      Critical Triage <span className="font-mono">(10/10)</span>
+                      {t.home.teaser1Urgency}
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-400 flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Immediate
+                    {t.home.teaser1Time}
                   </span>
                 </div>
                 <div>
                   <h2 className="text-xs font-bold text-slate-100">
-                    St. Jude Clinic: Flood Evacuation Required
+                    {t.home.teaser1Title}
                   </h2>
                   <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
-                    4 dialysis patients trapped on 2nd floor, generator fuel exhausted in 40 mins.
+                    {t.home.teaser1Desc}
                   </p>
                 </div>
                 <div className="flex items-center justify-between pt-1 border-t border-slate-850 text-[10px]">
@@ -138,7 +139,7 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                     44 Riverside Rd
                   </span>
                   <span className="rounded-full bg-emerald-950/40 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-300">
-                    Rescue Boat Dispatched
+                    {t.home.teaser1Dispatched}
                   </span>
                 </div>
               </div>
@@ -149,18 +150,18 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                   <div className="flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-amber-500" />
                     <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wide">
-                      Infrastructure Alert
+                      {t.home.teaser2Urgency}
                     </span>
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-bold font-mono">98% Grounded</span>
+                  <span className="text-[10px] text-emerald-400 font-bold font-mono">{t.home.teaser2Grounded}</span>
                 </div>
                 <p className="text-xs font-semibold text-slate-200">
-                  Overpass Collapse & Active Gas Hazard
+                  {t.home.teaser2Title}
                 </p>
                 <div className="flex items-center justify-between text-[10px] text-slate-400">
-                  <span>8th Ave & Maple St</span>
+                  <span>{t.home.teaser2Location}</span>
                   <span className="rounded-full bg-amber-950/40 border border-amber-500/30 px-2 py-0.5 font-bold text-amber-300">
-                    Gas Utility Shutoff
+                    {t.home.teaser2Action}
                   </span>
                 </div>
               </div>
@@ -168,7 +169,7 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
               {/* Luminous Stats Chip */}
               <div className="flex items-center justify-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-950/30 py-1 px-3 text-xs font-medium text-emerald-300 w-fit mx-auto">
                 <Activity className="h-3.5 w-3.5 text-emerald-400" />
-                <span>Zero Hallucinations • Humanitarian Factual Grounding</span>
+                <span>{t.home.zeroHallucinations}</span>
               </div>
             </div>
           </div>
@@ -179,10 +180,10 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
       <section aria-labelledby="how-it-works-title" className="space-y-4">
         <div className="text-center sm:text-left space-y-1">
           <h2 id="how-it-works-title" className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-            How BridgeAI Works
+            {t.home.howTitle}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
-            A three-step humanitarian intelligence pipeline designed for speed, clarity, and safety.
+            {t.home.howSubtitle}
           </p>
         </div>
 
@@ -193,19 +194,18 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                 <Zap className="h-5 w-5" aria-hidden="true" />
               </div>
               <CardTitle className="text-base font-bold text-slate-100">
-                1. Ingest Messy Dispatches
+                {t.home.step1Title}
               </CardTitle>
               <CardDescription className="text-xs text-slate-400">
-                Raw, unstructured intake from any channel
+                {t.home.step1Subtitle}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 text-xs text-slate-300 space-y-1.5 leading-relaxed">
               <p>
-                Accepts frantic citizen alerts, garbled radio dispatches, field notes, and optional photo
-                snapshots.
+                {t.home.step1Desc1}
               </p>
               <p className="text-slate-400">
-                Input sanitization strips invisible zero-width overrides and malicious control characters.
+                {t.home.step1Desc2}
               </p>
             </CardContent>
           </Card>
@@ -216,19 +216,18 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                 <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
               </div>
               <CardTitle className="text-base font-bold text-slate-100">
-                2. Gemini Fact & Triage Extraction
+                {t.home.step2Title}
               </CardTitle>
               <CardDescription className="text-xs text-slate-400">
-                Zero hallucination, schema-enforced AI
+                {t.home.step2Subtitle}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 text-xs text-slate-300 space-y-1.5 leading-relaxed">
               <p>
-                Evaluates life-safety urgency (Critical, High, Medium, Low), maps physical locations,
-                estimates affected populations, and flags contact details.
+                {t.home.step2Desc1}
               </p>
               <p className="text-slate-400">
-                Crucially identifies <strong>missing information gaps</strong> that responders must verify.
+                {t.home.step2Desc2}
               </p>
             </CardContent>
           </Card>
@@ -239,19 +238,18 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                 <ListOrdered className="h-5 w-5" aria-hidden="true" />
               </div>
               <CardTitle className="text-base font-bold text-slate-100">
-                3. Prioritized Action Dispatch
+                {t.home.step3Title}
               </CardTitle>
               <CardDescription className="text-xs text-slate-400">
-                Operational tasks for field responders
+                {t.home.step3Subtitle}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0 text-xs text-slate-300 space-y-1.5 leading-relaxed">
               <p>
-                Generates actionable operational checklists with assigned target entities and execution
-                statuses.
+                {t.home.step3Desc1}
               </p>
               <p className="text-slate-400">
-                Track actions directly within the interactive workbench and save to local client history.
+                {t.home.step3Desc2}
               </p>
             </CardContent>
           </Card>
@@ -263,15 +261,14 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
             <h2 id="use-cases-title" className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-              Real-World Crisis Use Cases
+              {t.home.useCasesTitle}
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
-              Select any pre-configured scenario to test how BridgeAI extracts intelligence from chaotic
-              inputs.
+              {t.home.useCasesSubtitle}
             </p>
           </div>
           <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 border-slate-700 bg-slate-800 text-slate-200">
-            4 Interactive Scenarios
+            {t.home.interactiveScenarios}
           </Badge>
         </div>
 
@@ -288,11 +285,11 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                       {getPresetIcon(preset.iconName)}
                     </div>
                     <Badge urgency={preset.urgencyHint} className="text-[10px] font-bold uppercase">
-                      {preset.urgencyHint}
+                      {t.urgency[preset.urgencyHint] || preset.urgencyHint}
                     </Badge>
                   </div>
                   <span className="text-[11px] text-slate-400 capitalize">
-                    {preset.category.replace(/_/g, ' ')}
+                    {t.categories[preset.category as keyof typeof t.categories] || preset.category.replace(/_/g, ' ')}
                   </span>
                 </div>
                 <CardTitle className="text-base font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
@@ -312,9 +309,9 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                   size="sm"
                   onClick={() => onNavigateToAnalyze(preset)}
                   className="w-full text-xs font-semibold gap-1.5 h-9 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-750"
-                  aria-label={`Load and analyze scenario: ${preset.title}`}
+                  aria-label={formatTemplate(t.home.loadScenarioAria, { title: preset.title })}
                 >
-                  <span>Load & Analyze Scenario</span>
+                  <span>{t.home.loadScenario}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </CardContent>
@@ -331,13 +328,10 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
         <HelpCircle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" aria-hidden="true" />
         <div className="space-y-1 text-xs">
           <h3 id="ethics-note-title" className="font-bold text-slate-100 text-sm">
-            Humanitarian Safety & Operational Verification Policy
+            {t.home.ethicsTitle}
           </h3>
           <p className="text-slate-300 leading-relaxed">
-            BridgeAI provides AI-assisted extraction to support triage coordinators under high-pressure
-            conditions. It does not replace human incident command. All AI-generated assessments, locations,
-            and resource recommendations must be corroborated by field responders before life-safety
-            actions are undertaken.
+            {t.home.ethicsDesc}
           </p>
         </div>
       </section>

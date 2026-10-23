@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { ShieldCheck, Home, Sparkles, FileText, Layers } from 'lucide-react';
-
 import { useNavigation } from './NavigationContext';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export type AppTab = 'home' | 'analyze' | 'results' | 'history';
 
@@ -20,6 +21,7 @@ export function Header({
   hasActiveResult = false,
   historyCount,
 }: HeaderProps) {
+  const { t } = useLanguage();
   let navContext: ReturnType<typeof useNavigation> | null = null;
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -34,17 +36,17 @@ export function Header({
   const count = typeof historyCount === 'number' ? historyCount : navContext?.historyCount;
 
   const tabs: { id: AppTab; label: string; icon: React.ReactNode; indicator?: string }[] = [
-    { id: 'home', label: 'Home', icon: <Home className="h-4 w-4" /> },
-    { id: 'analyze', label: 'Analyze', icon: <Sparkles className="h-4 w-4" /> },
+    { id: 'home', label: t.nav.home, icon: <Home className="h-4 w-4" /> },
+    { id: 'analyze', label: t.nav.analyze, icon: <Sparkles className="h-4 w-4" /> },
     {
       id: 'results',
-      label: 'Results & My Actions',
+      label: t.nav.results,
       icon: <FileText className="h-4 w-4" />,
-      indicator: isResultActive ? 'Active' : undefined,
+      indicator: isResultActive ? t.nav.activeBadge : undefined,
     },
     {
       id: 'history',
-      label: 'History',
+      label: t.nav.history,
       icon: <Layers className="h-4 w-4" />,
       indicator: typeof count === 'number' && count > 0 ? String(count) : undefined,
     },
@@ -57,7 +59,7 @@ export function Header({
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
       >
-        Skip to main content
+        {t.common.skipContent}
       </a>
 
       <header
@@ -88,10 +90,10 @@ export function Header({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-base font-bold tracking-tight text-slate-100">
-                  BridgeAI
+                  {t.common.appName}
                 </span>
                 <span className="rounded-full bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.2 text-[9px] font-bold text-emerald-400">
-                  Engine
+                  {t.common.engine}
                 </span>
               </div>
             </div>
@@ -140,18 +142,20 @@ export function Header({
             </nav>
           )}
 
-          {/* Status Badge */}
+          {/* Right Controls: Core Ready Badge & Language Switcher */}
           <div className="flex items-center gap-2">
             <div
               className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/40 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 shadow-xs"
-              aria-label="System status: Core Ready"
+              aria-label={t.nav.systemStatus}
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span className="hidden sm:inline">Core Ready</span>
+              <span className="hidden sm:inline">{t.nav.coreReady}</span>
             </div>
+
+            <LanguageSwitcher />
           </div>
         </div>
 
@@ -179,7 +183,7 @@ export function Header({
                   }`}
                 >
                   {tab.icon}
-                  <span>{tab.id === 'results' ? 'Results' : tab.label}</span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}

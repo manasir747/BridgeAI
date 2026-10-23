@@ -187,6 +187,7 @@ export interface AnalysisRequest {
   categoryHint?: AnalysisCategory;
   urgencyHint?: UrgencyLevel;
   locale?: string;
+  language?: 'en' | 'hi' | 'mr';
 }
 
 /**
