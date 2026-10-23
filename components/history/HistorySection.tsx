@@ -344,7 +344,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
           </div>
 
           {metrics && (
-            <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
+            <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-mono">
               <Database className="h-3 w-3 text-slate-500" />
               <span>
                 {metrics.itemCount} dossiers • {Math.round(metrics.estimatedBytes / 1024)} KB (
@@ -443,7 +443,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                     </span>
 
                     <Badge urgency={result.urgency.level} className="text-[10px] font-bold px-2 py-0.2 uppercase">
-                      {result.urgency.level} ({result.urgency.score}/10)
+                      {result.urgency.level} <span className="font-mono">({result.urgency.score}/10)</span>
                     </Badge>
 
                     {item.isStarred && (
@@ -453,7 +453,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-xs text-slate-400">
+                  <div className="flex items-center gap-1 text-xs text-slate-400 font-mono">
                     <Clock className="h-3.5 w-3.5 text-slate-500" />
                     <span>{formatDate(item.savedAt)}</span>
                   </div>
@@ -479,7 +479,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                 {/* Footer Metrics & Actions */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-800/80 text-xs">
                   <div className="flex items-center gap-3 text-slate-400 text-[11px]">
-                    <span className="flex items-center gap-1 font-medium">
+                    <span className="flex items-center gap-1 font-medium font-mono">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                       <span>
                         {completedCount}/{totalActions} Tasks Done
@@ -487,7 +487,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                     </span>
 
                     {result.missingInformation.length > 0 && (
-                      <span className="flex items-center gap-1 text-amber-400 font-semibold">
+                      <span className="flex items-center gap-1 text-amber-400 font-semibold font-mono">
                         <FileQuestion className="h-3.5 w-3.5" />
                         <span>{result.missingInformation.length} Info Gaps</span>
                       </span>

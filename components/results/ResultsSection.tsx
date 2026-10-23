@@ -298,14 +298,14 @@ ${result.missingInformation.map((m) => `- ${m.field}: ${m.description}`).join('\
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" aria-hidden="true" />
                 <span>My Actions Tracker</span>
               </h3>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
                 {completedActions.length} of {totalActions} tasks marked completed ({progressPercent}%)
               </p>
             </div>
 
             <Badge
               variant="outline"
-              className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+              className={`text-xs font-bold px-2.5 py-0.5 rounded-full font-mono ${
                 progressPercent === 100
                   ? 'border-emerald-500 text-emerald-300 bg-emerald-950/40'
                   : 'text-slate-300 border-slate-700 bg-slate-800'

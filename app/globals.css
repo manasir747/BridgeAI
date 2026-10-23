@@ -17,31 +17,29 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-playfair), "Playfair Display", Georgia, serif;
-  --font-serif: var(--font-dm-serif), "DM Serif Display", Georgia, serif;
-  --font-heading: var(--font-dm-serif), "DM Serif Display", Georgia, serif;
+  --font-sans: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Headings use DM Serif Display for an elegant, high-contrast editorial look */
-h1, h2, h3, .font-heading, .heading-serif {
-  font-family: var(--font-dm-serif), "DM Serif Display", Georgia, serif !important;
-  letter-spacing: -0.015em;
-  font-weight: 400;
+/* Headings use Manrope */
+h1, h2, h3, h4, h5, h6, .font-heading, .heading-serif {
+  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif !important;
 }
 
 h1 *, h2 *, h3 *, .font-heading *, .heading-serif * {
-  font-family: inherit !important;
+  font-family: inherit;
 }
 
-/* Body, navigation, buttons, forms, inputs, badges, cards, metadata use Playfair Display */
-body, button, input, select, textarea, optgroup, label, table, th, td, code, pre, span, p, a, div, li, ul, ol {
-  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+/* All headings, body text, navigation, buttons, forms, labels, badges, cards, and analysis results use Manrope */
+body, button, input, select, textarea, optgroup, label, table, th, td, span, p, a, div, li, ul, ol {
+  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif;
   letter-spacing: -0.008em;
   min-height: 100vh;
   /* Dark navy ambient gradient background */
@@ -54,9 +52,14 @@ body {
   background-attachment: fixed;
 }
 
-/* Enforce Playfair Display globally on all form controls, buttons, text inputs */
+/* Enforce Manrope globally on all form controls, buttons, text inputs */
 button, input, select, textarea, optgroup {
-  font-family: var(--font-playfair), "Playfair Display", Georgia, serif !important;
+  font-family: var(--font-manrope), "Manrope", system-ui, -apple-system, sans-serif !important;
+}
+
+/* Geist Mono: Timestamps, counters, technical identifiers, and diagnostic metadata only */
+code, pre, kbd, samp, .font-mono, [data-mono], .mono-metric, time {
+  font-family: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 /* Card hover lift utility */

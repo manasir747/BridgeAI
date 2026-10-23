@@ -269,7 +269,7 @@ export function AnalyzeSection({
                 <span>Raw Field Dispatch / Problem Statement</span>
               </label>
               <span
-                className={`text-xs font-medium ${
+                className={`text-xs font-medium font-mono ${
                   isTooShort
                     ? 'text-amber-400 font-semibold'
                     : isTooLong

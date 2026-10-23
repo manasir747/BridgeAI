@@ -125,7 +125,7 @@ export function Header({
                     <span>{tab.label}</span>
                     {tab.indicator && (
                       <span
-                        className={`ml-1 rounded-full px-1.5 py-0.2 text-[9px] font-bold ${
+                        className={`ml-1 rounded-full px-1.5 py-0.2 text-[9px] font-bold font-mono ${
                           isActive
                             ? 'bg-white/20 text-white'
                             : 'bg-emerald-950 border border-emerald-500/40 text-emerald-300'

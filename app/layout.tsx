@@ -1,21 +1,19 @@
 import type { Metadata } from 'next';
-import { DM_Serif_Display, Playfair_Display } from 'next/font/google';
+import { Manrope, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { NavigationProvider } from '@/components/layout/NavigationContext';
 
-const dmSerifDisplay = DM_Serif_Display({
-  variable: '--font-dm-serif',
+const manrope = Manrope({
+  variable: '--font-manrope',
   subsets: ['latin'],
-  weight: ['400'],
   display: 'swap',
 });
 
-const playfairDisplay = Playfair_Display({
-  variable: '--font-playfair',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -40,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSerifDisplay.variable} ${playfairDisplay.variable} h-full antialiased`}
+      className={`${manrope.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-200">
         <NavigationProvider>

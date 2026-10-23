@@ -116,7 +116,7 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                   <div className="flex items-center gap-2">
                     <span className="flex h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
                     <span className="text-[11px] font-bold text-rose-400 uppercase tracking-wide">
-                      Critical Triage (10/10)
+                      Critical Triage <span className="font-mono">(10/10)</span>
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-400 flex items-center gap-1">
@@ -152,7 +152,7 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
                       Infrastructure Alert
                     </span>
                   </div>
-                  <span className="text-[10px] text-emerald-400 font-bold">98% Grounded</span>
+                  <span className="text-[10px] text-emerald-400 font-bold font-mono">98% Grounded</span>
                 </div>
                 <p className="text-xs font-semibold text-slate-200">
                   Overpass Collapse & Active Gas Hazard

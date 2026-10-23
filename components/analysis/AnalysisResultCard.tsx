@@ -114,7 +114,7 @@ export function AnalysisResultCard({
                 aria-label={`Urgency level: ${urgency.level}`}
                 className="text-xs font-bold px-3 py-0.5 rounded-full shadow-xs"
               >
-                URGENCY: {urgency.level.toUpperCase()} ({urgency.score}/10)
+                URGENCY: {urgency.level.toUpperCase()} <span className="font-mono">({urgency.score}/10)</span>
               </Badge>
 
               <span
@@ -123,13 +123,13 @@ export function AnalysisResultCard({
               >
                 {verBadge.icon}
                 <span className="capitalize">{verification.status.replace(/_/g, ' ')}</span>
-                <span className="text-[11px] opacity-75">
+                <span className="text-[11px] opacity-75 font-mono">
                   ({Math.round(verification.confidenceScore * 100)}% conf)
                 </span>
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
               <Clock className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
               <span>{formatDate(timestamp)}</span>
             </div>
@@ -231,7 +231,7 @@ export function AnalysisResultCard({
                       <Phone className="h-3 w-3 text-violet-400" />
                     )}
                     <span className="font-semibold uppercase">{contact.type}:</span>
-                    <span>{contact.value}</span>
+                    <span className="font-mono">{contact.value}</span>
                   </span>
                 ))}
               </div>
@@ -258,7 +258,7 @@ export function AnalysisResultCard({
                     Population Estimate:
                   </span>
                   {extractedDetails.affectedPopulation.countEstimate !== undefined && (
-                    <span className="rounded-full bg-sky-950/40 border border-sky-500/30 px-2 py-0.5 text-[11px] font-bold text-sky-300">
+                    <span className="rounded-full bg-sky-950/40 border border-sky-500/30 px-2 py-0.5 text-[11px] font-bold text-sky-300 font-mono">
                       ~{extractedDetails.affectedPopulation.countEstimate} people
                     </span>
                   )}
