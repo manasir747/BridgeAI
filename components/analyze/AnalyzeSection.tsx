@@ -158,11 +158,15 @@ export function AnalyzeSection({
       // Successful analysis via Gemini
       const analysisResult: StructuredAnalysisResult = json.data;
 
-      // Save to client history
-      const historyService = getHistoryService();
-      await historyService.save(analysisResult, {
-        notes: attachment ? `Attached field photo: ${attachment.name}` : undefined,
-      });
+      // Save to client history (non-blocking best-effort)
+      try {
+        const historyService = getHistoryService();
+        await historyService.save(analysisResult, {
+          notes: attachment ? `Attached field photo: ${attachment.name}` : undefined,
+        });
+      } catch (storageErr) {
+        console.warn('Failed to persist analysis to local history:', storageErr);
+      }
 
       setIsLoading(false);
       onAnalysisSuccess(analysisResult);

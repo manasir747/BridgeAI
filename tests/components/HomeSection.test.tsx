@@ -82,4 +82,26 @@ describe('HomeSection Component', () => {
       screen.getByText(/All AI-generated assessments, locations, and resource recommendations must be corroborated/i)
     ).toBeInTheDocument();
   });
+
+  it('renders societal impact and humanitarian purpose section with 3 core pillars', () => {
+    render(
+      <HomeSection onNavigateToAnalyze={vi.fn()} onNavigateToHistory={vi.fn()} />
+    );
+
+    expect(
+      screen.getByRole('heading', { name: /Societal Impact & Mission/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Humanitarian Purpose & Societal Impact/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/The Problem: Crisis Information Overload/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/BridgeAI's Contribution: Crisis Intelligence/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Intended Beneficiaries: Responders & Communities/i)
+    ).toBeInTheDocument();
+  });
 });

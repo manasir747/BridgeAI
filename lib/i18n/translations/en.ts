@@ -92,6 +92,19 @@ export const en = {
     ethicsTitle: 'Humanitarian Safety & Operational Verification Policy',
     ethicsDesc:
       'BridgeAI provides AI-assisted extraction to support triage coordinators under high-pressure conditions. It does not replace human incident command. All AI-generated assessments, locations, and resource recommendations must be corroborated by field responders before life-safety actions are undertaken.',
+    impactBadge: 'Humanitarian Purpose & Societal Impact',
+    impactTitle: 'Societal Impact & Mission',
+    impactSubtitle:
+      'Bridging the critical gap between chaotic emergency dispatches and coordinated humanitarian response.',
+    impactPillar1Title: 'The Problem: Crisis Information Overload',
+    impactPillar1Desc:
+      'In sudden-onset disasters, emergency coordination networks are overwhelmed by fragmented, unverified messages. Critical distress calls from vulnerable populations often get lost in noisy feeds, delaying vital life-safety interventions.',
+    impactPillar2Title: "BridgeAI's Contribution: Crisis Intelligence",
+    impactPillar2Desc:
+      'BridgeAI converts unstructured reports into structured crisis intelligence. By synthesizing verified facts, identifying information gaps, and enabling resource prioritization, it empowers field responders with informed decision-making under extreme pressure.',
+    impactPillar3Title: 'Intended Beneficiaries: Responders & Communities',
+    impactPillar3Desc:
+      'Engineered for volunteer mutual-aid networks, disaster relief coordinators, civic emergency teams, and frontline humanitarian personnel working to protect vulnerable populations and assist affected communities.',
   },
   analyze: {
     badge: 'Intake & Triage Workspace',

@@ -17,6 +17,9 @@ import {
   MapPin,
   Clock,
   Activity,
+  HeartHandshake,
+  ShieldCheck,
+  Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -173,6 +176,68 @@ export function HomeSection({ onNavigateToAnalyze, onNavigateToHistory }: HomeSe
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Societal Benefit & Humanitarian Purpose */}
+      <section aria-labelledby="societal-impact-title" className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-slate-800/80 pb-3">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400">
+              <HeartHandshake className="h-4 w-4" aria-hidden="true" />
+              <span>{t.home.impactBadge}</span>
+            </div>
+            <h2 id="societal-impact-title" className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
+              {t.home.impactTitle}
+            </h2>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
+            {t.home.impactSubtitle}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="rounded-2xl border-slate-800 bg-slate-900/85 p-5 card-hover-lift flex flex-col justify-between">
+            <CardHeader className="p-0 pb-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-400 mb-2">
+                <AlertTriangle className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <CardTitle className="text-base font-bold text-slate-100">
+                {t.home.impactPillar1Title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 text-xs text-slate-300 leading-relaxed">
+              <p>{t.home.impactPillar1Desc}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border-slate-800 bg-slate-900/85 p-5 card-hover-lift flex flex-col justify-between">
+            <CardHeader className="p-0 pb-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 mb-2">
+                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <CardTitle className="text-base font-bold text-slate-100">
+                {t.home.impactPillar2Title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 text-xs text-slate-300 leading-relaxed">
+              <p>{t.home.impactPillar2Desc}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border-slate-800 bg-slate-900/85 p-5 card-hover-lift flex flex-col justify-between">
+            <CardHeader className="p-0 pb-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-400 mb-2">
+                <Users className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <CardTitle className="text-base font-bold text-slate-100">
+                {t.home.impactPillar3Title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 text-xs text-slate-300 leading-relaxed">
+              <p>{t.home.impactPillar3Desc}</p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 

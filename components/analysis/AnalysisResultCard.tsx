@@ -129,6 +129,16 @@ export function AnalysisResultCard({
                   ({Math.round(verification.confidenceScore * 100)}% {t.verification.conf})
                 </span>
               </span>
+
+              {result.metadata?.modelVersion === 'simulated-demo-engine' && (
+                <span
+                  className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-amber-500/40 text-amber-300 bg-amber-950/40"
+                  aria-label="Simulation notice"
+                >
+                  <AlertTriangle className="h-3 w-3 text-amber-400" aria-hidden="true" />
+                  <span>Demo Simulation</span>
+                </span>
+              )}
             </div>
 
             <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
