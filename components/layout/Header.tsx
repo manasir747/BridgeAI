@@ -62,12 +62,12 @@ export function Header({
 
       <header
         role="banner"
-        className="sticky top-3 z-50 mx-auto w-full max-w-5xl px-3 sm:px-6 transition-all duration-300"
+        className="sticky top-3 z-50 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 transition-all duration-300"
       >
-        <div className="glass-pill rounded-full shadow-[0_10px_35px_-5px_rgba(15,23,42,0.08)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] px-3 sm:px-4 py-2 flex items-center justify-between gap-2 border border-slate-200/80 dark:border-slate-800/80">
+        <div className="rounded-full shadow-md px-3 sm:px-4 py-2 flex items-center justify-between gap-2 border border-slate-800 bg-slate-900/90 backdrop-blur-xl">
           {/* Logo & Branding */}
           <div
-            className="flex items-center gap-2.5 cursor-pointer rounded-full py-1 px-2 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors"
+            className="flex items-center gap-2.5 cursor-pointer rounded-full py-1 px-2 hover:bg-slate-800/80 transition-colors"
             onClick={() => handleTabChange?.('home')}
             role="button"
             tabIndex={0}
@@ -87,10 +87,10 @@ export function Header({
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
+                <span className="text-base font-bold tracking-tight text-slate-100">
                   BridgeAI
                 </span>
-                <span className="rounded-full bg-emerald-500/10 px-2 py-0.2 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="rounded-full bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.2 text-[9px] font-bold text-emerald-400">
                   Engine
                 </span>
               </div>
@@ -102,7 +102,7 @@ export function Header({
             <nav
               role="tablist"
               aria-label="Main Application Sections"
-              className="hidden md:flex items-center gap-1 rounded-full bg-slate-100/70 dark:bg-slate-800/60 p-1 text-xs border border-slate-200/50 dark:border-slate-700/50"
+              className="hidden md:flex items-center gap-1 rounded-full bg-slate-950/80 p-1 text-xs border border-slate-800"
             >
               {tabs.map((tab) => {
                 const isActive = currentTab === tab.id;
@@ -115,10 +115,10 @@ export function Header({
                     aria-controls={`panel-${tab.id}`}
                     tabIndex={isActive ? 0 : -1}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
-                        ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30 font-semibold scale-[1.02]'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/70 dark:hover:bg-slate-700/70'
+                        ? 'bg-emerald-600 text-white shadow-xs font-semibold'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800'
                     }`}
                   >
                     {tab.icon}
@@ -128,7 +128,7 @@ export function Header({
                         className={`ml-1 rounded-full px-1.5 py-0.2 text-[9px] font-bold ${
                           isActive
                             ? 'bg-white/20 text-white'
-                            : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            : 'bg-emerald-950 border border-emerald-500/40 text-emerald-300'
                         }`}
                       >
                         {tab.indicator}
@@ -143,7 +143,7 @@ export function Header({
           {/* Status Badge */}
           <div className="flex items-center gap-2">
             <div
-              className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 shadow-2xs"
+              className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-950/40 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 shadow-xs"
               aria-label="System status: Core Ready"
             >
               <span className="relative flex h-2 w-2">
@@ -160,7 +160,7 @@ export function Header({
           <nav
             role="tablist"
             aria-label="Mobile Navigation"
-            className="flex md:hidden mt-2 mx-auto max-w-sm rounded-full glass-pill p-1 justify-around text-xs border border-slate-200/80 dark:border-slate-800/80 shadow-md"
+            className="flex md:hidden mt-2 mx-auto max-w-sm rounded-full p-1 justify-around text-xs border border-slate-800 bg-slate-900/90 shadow-md backdrop-blur-xl"
           >
             {tabs.map((tab) => {
               const isActive = currentTab === tab.id;
@@ -175,7 +175,7 @@ export function Header({
                   className={`flex items-center gap-1 py-1 px-3 rounded-full font-medium text-[11px] transition-all cursor-pointer ${
                     isActive
                       ? 'bg-emerald-600 text-white font-semibold shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                      : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   {tab.icon}

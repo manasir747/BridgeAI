@@ -100,22 +100,22 @@ export function ImageUpload({
           tabIndex={disabled ? -1 : 0}
           role="button"
           aria-label="Click or press enter to attach a field photo"
-          className={`group flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border/70 p-4 text-center transition-colors hover:border-primary/50 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+          className={`group flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700/80 bg-slate-950/50 p-3.5 text-center transition-colors hover:border-emerald-500/50 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 ${
             disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           }`}
         >
-          <UploadCloud className="h-6 w-6 text-muted-foreground transition-transform group-hover:scale-110 mb-1" />
-          <p className="text-xs font-medium text-foreground">
-            Drop an incident photo or <span className="text-primary underline">browse</span>
+          <UploadCloud className="h-5 w-5 text-slate-400 transition-transform group-hover:scale-110 mb-1" />
+          <p className="text-xs font-medium text-slate-200">
+            Drop an incident photo or <span className="text-emerald-400 underline">browse</span>
           </p>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
+          <p className="text-[11px] text-slate-400 mt-0.5">
             Attach visual evidence (damage, medical need, signboards)
           </p>
         </div>
       ) : (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-border/80 bg-muted/30 p-2.5">
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-700 bg-slate-950/80 p-2.5">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-background">
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-slate-700 bg-slate-900">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={attachment.previewUrl}
@@ -124,10 +124,10 @@ export function ImageUpload({
               />
             </div>
             <div className="overflow-hidden text-left">
-              <p className="truncate text-xs font-semibold text-foreground">
+              <p className="truncate text-xs font-semibold text-slate-100">
                 {attachment.name}
               </p>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-[11px] text-slate-400">
                 {(attachment.size / 1024).toFixed(1)} KB • Image attached
               </p>
             </div>
@@ -138,7 +138,7 @@ export function ImageUpload({
               href={attachment.previewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30"
               title="Open full size image"
               aria-label="Open image in new tab"
             >
@@ -150,7 +150,7 @@ export function ImageUpload({
               size="sm"
               onClick={handleRemove}
               disabled={disabled}
-              className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+              className="h-8 w-8 p-0 text-slate-400 hover:text-rose-400"
               aria-label="Remove attached image"
             >
               <X className="h-4 w-4" />

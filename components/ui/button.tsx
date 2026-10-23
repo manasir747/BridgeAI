@@ -8,15 +8,15 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm shadow-emerald-600/20 hover:shadow-md hover:shadow-emerald-600/30',
+          'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm shadow-emerald-600/20 hover:shadow-md hover:shadow-emerald-600/30',
         destructive:
-          'bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20',
+          'bg-rose-600 text-white hover:bg-rose-500 shadow-sm shadow-rose-600/20',
         outline:
-          'border border-border/80 bg-background/80 hover:bg-muted/80 hover:text-foreground text-foreground backdrop-blur-xs',
+          'border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-200',
         secondary:
-          'bg-slate-100 dark:bg-slate-800 text-foreground hover:bg-slate-200/80 dark:hover:bg-slate-700/80',
-        ghost: 'hover:bg-muted/70 hover:text-foreground text-muted-foreground',
-        link: 'text-emerald-600 underline-offset-4 hover:underline',
+          'bg-slate-800 text-slate-200 hover:bg-slate-700',
+        ghost: 'hover:bg-slate-800 hover:text-white text-slate-400',
+        link: 'text-emerald-400 underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-10 px-4 py-2',

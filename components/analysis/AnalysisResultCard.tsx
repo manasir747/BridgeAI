@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import {
   CheckCircle2,
   HelpCircle,
@@ -13,6 +15,9 @@ import {
   AlertTriangle,
   Quote,
   Check,
+  ChevronDown,
+  ChevronUp,
+  Radio,
 } from 'lucide-react';
 import { ActionStatus, StructuredAnalysisResult } from '@/types/analysis';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +36,8 @@ export function AnalysisResultCard({
   onActionToggle,
   isActionInteractive = false,
 }: AnalysisResultCardProps) {
+  const [showSecondaryDetails, setShowSecondaryDetails] = useState<boolean>(false);
+
   const {
     summary,
     category,
@@ -46,194 +53,326 @@ export function AnalysisResultCard({
 
   const formattedCategory = category.replace(/_/g, ' ').toUpperCase();
 
+  // Verification status styling helper
+  const getVerificationBadge = () => {
+    switch (verification.status) {
+      case 'verified':
+        return {
+          icon: <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />,
+          classes: 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30',
+          label: 'Verified Fact',
+        };
+      case 'unverified':
+        return {
+          icon: <AlertTriangle className="h-3.5 w-3.5 text-rose-400" aria-hidden="true" />,
+          classes: 'bg-rose-950/40 text-rose-300 border-rose-500/30',
+          label: 'Unverified Claim',
+        };
+      case 'conflicting':
+        return {
+          icon: <AlertTriangle className="h-3.5 w-3.5 text-orange-400" aria-hidden="true" />,
+          classes: 'bg-orange-950/40 text-orange-300 border-orange-500/30',
+          label: 'Conflicting Reports',
+        };
+      default:
+        return {
+          icon: <HelpCircle className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />,
+          classes: 'bg-amber-950/40 text-amber-300 border-amber-500/30',
+          label: 'Needs Follow-up',
+        };
+    }
+  };
+
+  const verBadge = getVerificationBadge();
+
   return (
     <article
       aria-label={`Analysis result: ${summary}`}
-      className={`space-y-5 ${className || ''}`}
+      className={`space-y-4 ${className || ''}`}
     >
-      {/* 1. HERO SUMMARY & URGENCY CARD */}
-      <div className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] border border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/90 p-6 sm:p-8 shadow-[0_20px_50px_rgba(15,23,42,0.07)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl animate-entrance">
-        {/* Ambient glow accent */}
+      {/* 1. CRISIS SUMMARY & SEVERITY DASHBOARD BANNER */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-900/90 p-5 sm:p-6 shadow-md backdrop-blur-xl animate-entrance">
+        {/* Subtle accent corner glow */}
         <div
-          className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400/15 via-teal-300/10 to-transparent blur-2xl"
+          className="pointer-events-none absolute -top-20 -right-20 h-48 w-48 rounded-full bg-emerald-500/10 blur-2xl"
           aria-hidden="true"
         />
 
-        <div className="relative z-10 space-y-4">
-          {/* Header Badges & Timestamps */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="relative z-10 space-y-3.5">
+          {/* Metadata & Status Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline" className="font-mono text-[11px] tracking-wider font-bold px-3 py-0.5 rounded-full border-slate-300 dark:border-slate-700">
+              <Badge
+                variant="outline"
+                className="text-[11px] font-bold px-2.5 py-0.5 rounded-full border-slate-700 text-slate-300 bg-slate-800/80 tracking-wider"
+              >
                 {formattedCategory}
               </Badge>
+
               <Badge
                 urgency={urgency.level}
                 aria-label={`Urgency level: ${urgency.level}`}
-                className="text-xs font-bold px-3 py-0.5 rounded-full shadow-2xs"
+                className="text-xs font-bold px-3 py-0.5 rounded-full shadow-xs"
               >
                 URGENCY: {urgency.level.toUpperCase()} ({urgency.score}/10)
               </Badge>
+
               <span
-                className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full border ${verBadge.classes}`}
                 aria-label={`Verification status: ${verification.status}`}
               >
-                {verification.status === 'verified' ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
-                ) : (
-                  <HelpCircle className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
-                )}
+                {verBadge.icon}
                 <span className="capitalize">{verification.status.replace(/_/g, ' ')}</span>
-                <span className="font-mono text-[11px] text-slate-400">
+                <span className="text-[11px] opacity-75">
                   ({Math.round(verification.confidenceScore * 100)}% conf)
                 </span>
               </span>
             </div>
 
-            <span className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1 font-mono">
-              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-              {formatDate(timestamp)}
-            </span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <Clock className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />
+              <span>{formatDate(timestamp)}</span>
+            </div>
           </div>
 
-          {/* Main Incident Summary */}
-          <div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-tight">
+          {/* Incident Summary Headline */}
+          <div className="space-y-2">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-100 leading-snug">
               {summary}
             </h2>
-            <div className="mt-3 flex items-start gap-2.5 rounded-2xl bg-slate-50/90 dark:bg-slate-950/50 p-3.5 border border-slate-200/60 dark:border-slate-800/60">
-              <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                <strong className="font-semibold text-slate-900 dark:text-slate-100">Reasoning:</strong> {urgency.reasoning}
+
+            {/* Assessment Reasoning */}
+            <div className="flex items-start gap-2.5 rounded-xl bg-slate-950/60 p-3 border border-slate-800 text-xs sm:text-sm text-slate-300 leading-relaxed">
+              <AlertTriangle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" aria-hidden="true" />
+              <p>
+                <strong className="font-semibold text-slate-100">Reasoning:</strong> {urgency.reasoning}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. EXTRACTED OPERATIONAL DETAILS PANEL */}
-      <div className="relative overflow-hidden rounded-[26px] sm:rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 p-5 sm:p-7 shadow-[0_12px_36px_rgba(15,23,42,0.05)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.3)] backdrop-blur-xl animate-entrance-stagger-1 space-y-3.5">
-        <div className="flex items-center justify-between">
-          <h3
-            id={`extracted-details-title-${result.id}`}
-            className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2"
-          >
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            <span>Extracted Operational Details</span>
-          </h3>
-          <span className="text-[11px] font-mono text-slate-400">
-            Field Entity Extraction
-          </span>
+      {/* 2. KEY EXTRACTED OPERATIONAL DETAILS (Responsive 2-Column Grid) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Left Column: Locations & Contacts */}
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/85 p-4 sm:p-5 shadow-sm space-y-3.5 flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-emerald-400" />
+                <span>Locations & Ground Contacts</span>
+              </h3>
+              <span className="text-[11px] text-slate-500">Field Targets</span>
+            </div>
+
+            {/* Locations */}
+            {extractedDetails.locations.length > 0 ? (
+              <div className="space-y-1.5 text-xs">
+                <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
+                  Identified Locations:
+                </span>
+                <div className="space-y-1">
+                  {extractedDetails.locations.map((loc, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl bg-slate-950/50 p-2.5 border border-slate-800/80 space-y-0.5"
+                    >
+                      <p className="font-bold text-slate-100">{loc.name}</p>
+                      {loc.address && (
+                        <p className="text-[11px] text-slate-400">{loc.address}</p>
+                      )}
+                      {loc.context && (
+                        <p className="text-[11px] text-slate-400 italic">{loc.context}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 italic">No specific locations detected in dispatch.</p>
+            )}
+
+            {/* Entities & Roles */}
+            {extractedDetails.entities.length > 0 && (
+              <div className="space-y-1 text-xs pt-1">
+                <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
+                  Entities Involved:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {extractedDetails.entities.map((ent, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1 rounded-lg bg-slate-800/80 px-2 py-0.5 text-[11px] text-slate-300 border border-slate-700/60"
+                    >
+                      <span className="font-semibold text-slate-200">{ent.name}</span>
+                      <span className="text-[10px] text-slate-400">({ent.type})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Contact Information */}
+          {extractedDetails.contactInfo.length > 0 && (
+            <div className="pt-2 border-t border-slate-800/70 text-xs">
+              <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px] mb-1">
+                Communication Channels:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {extractedDetails.contactInfo.map((contact, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-violet-950/30 border border-violet-500/30 px-2.5 py-1 text-xs text-violet-300"
+                  >
+                    {contact.type === 'radio' ? (
+                      <Radio className="h-3 w-3 text-violet-400" />
+                    ) : (
+                      <Phone className="h-3 w-3 text-violet-400" />
+                    )}
+                    <span className="font-semibold uppercase">{contact.type}:</span>
+                    <span>{contact.value}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-sm">
-          {extractedDetails.locations.length > 0 && (
-            <div className="flex items-start gap-3 rounded-2xl bg-emerald-50/30 dark:bg-emerald-950/20 p-4 border border-emerald-500/20 card-hover-lift">
-              <MapPin className="h-4.5 w-4.5 text-emerald-600 mt-0.5 shrink-0" aria-hidden="true" />
-              <div>
-                <span className="font-bold text-xs block text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                  Locations:
-                </span>
-                <span className="text-slate-700 dark:text-slate-300 text-xs mt-0.5 block leading-relaxed">
-                  {extractedDetails.locations.map((l) => l.name).join(', ')}
-                </span>
-                {extractedDetails.locations.some((l) => l.address) && (
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5 font-mono">
-                    {extractedDetails.locations.map((l) => l.address).filter(Boolean).join(' • ')}
+        {/* Right Column: Affected Population & Resource Needs */}
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/85 p-4 sm:p-5 shadow-sm space-y-3.5 flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-teal-400 flex items-center gap-2">
+                <Users className="h-4 w-4 text-teal-400" />
+                <span>Affected Cohorts & Supplies</span>
+              </h3>
+              <span className="text-[11px] text-slate-500">Demographics & Logistics</span>
+            </div>
+
+            {/* Affected Population */}
+            {extractedDetails.affectedPopulation ? (
+              <div className="rounded-xl bg-slate-950/50 p-2.5 border border-slate-800/80 space-y-1 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-slate-200">
+                    Population Estimate:
                   </span>
+                  {extractedDetails.affectedPopulation.countEstimate !== undefined && (
+                    <span className="rounded-full bg-sky-950/40 border border-sky-500/30 px-2 py-0.5 text-[11px] font-bold text-sky-300">
+                      ~{extractedDetails.affectedPopulation.countEstimate} people
+                    </span>
+                  )}
+                </div>
+                {extractedDetails.affectedPopulation.description && (
+                  <p className="text-slate-300 text-xs leading-relaxed">
+                    {extractedDetails.affectedPopulation.description}
+                  </p>
                 )}
+                {extractedDetails.affectedPopulation.vulnerableGroups &&
+                  extractedDetails.affectedPopulation.vulnerableGroups.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {extractedDetails.affectedPopulation.vulnerableGroups.map((vg, i) => (
+                        <span
+                          key={i}
+                          className="rounded bg-rose-950/30 border border-rose-500/20 px-1.5 py-0.2 text-[10px] text-rose-300"
+                        >
+                          Vulnerable: {vg}
+                        </span>
+                      ))}
+                    </div>
+                  )}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-xs text-slate-500 italic">No specific population count indicated.</p>
+            )}
 
-          {extractedDetails.affectedPopulation && (
-            <div className="flex items-start gap-3 rounded-2xl bg-sky-50/30 dark:bg-sky-950/20 p-4 border border-sky-500/20 card-hover-lift">
-              <Users className="h-4.5 w-4.5 text-sky-600 mt-0.5 shrink-0" aria-hidden="true" />
-              <div>
-                <span className="font-bold text-xs block text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                  Affected Population:
+            {/* Resource Needs */}
+            {extractedDetails.resourceNeeds.length > 0 ? (
+              <div className="space-y-1.5 text-xs">
+                <span className="font-semibold text-slate-300 block uppercase tracking-wide text-[11px]">
+                  Requested Resource Needs:
                 </span>
-                <span className="text-slate-700 dark:text-slate-300 text-xs mt-0.5 block leading-relaxed">
-                  {extractedDetails.affectedPopulation.countEstimate
-                    ? `~${extractedDetails.affectedPopulation.countEstimate} people. `
-                    : ''}
-                  {extractedDetails.affectedPopulation.description || 'Estimated cohorts'}
-                </span>
+                <div className="space-y-1">
+                  {extractedDetails.resourceNeeds.map((resItem, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between rounded-xl bg-slate-950/50 p-2 border border-slate-800/80"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Package className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                        <div>
+                          <span className="font-bold text-slate-100">{resItem.item}</span>
+                          {resItem.quantity && (
+                            <span className="text-slate-400 text-[11px] ml-1">
+                              ({resItem.quantity})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {resItem.urgency && (
+                        <Badge
+                          urgency={resItem.urgency}
+                          className="text-[10px] font-bold px-2 py-0.2 uppercase"
+                        >
+                          {resItem.urgency}
+                        </Badge>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-xs text-slate-500 italic">No distinct supply requests flagged.</p>
+            )}
+          </div>
 
-          {extractedDetails.contactInfo.length > 0 && (
-            <div className="flex items-start gap-3 rounded-2xl bg-violet-50/30 dark:bg-violet-950/20 p-4 border border-violet-500/20 card-hover-lift">
-              <Phone className="h-4.5 w-4.5 text-violet-600 mt-0.5 shrink-0" aria-hidden="true" />
-              <div>
-                <span className="font-bold text-xs block text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                  Contact Info:
-                </span>
-                <span className="text-slate-700 dark:text-slate-300 text-xs mt-0.5 block leading-relaxed font-mono">
-                  {extractedDetails.contactInfo.map((c) => `${c.type}: ${c.value}`).join(' | ')}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {extractedDetails.resourceNeeds.length > 0 && (
-            <div className="flex items-start gap-3 rounded-2xl bg-amber-50/30 dark:bg-amber-950/20 p-4 border border-amber-500/20 card-hover-lift">
-              <Package className="h-4.5 w-4.5 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
-              <div>
-                <span className="font-bold text-xs block text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                  Resource Needs:
-                </span>
-                <span className="text-slate-700 dark:text-slate-300 text-xs mt-0.5 block leading-relaxed">
-                  {extractedDetails.resourceNeeds
-                    .map((r) => `${r.item}${r.quantity ? ` (${r.quantity})` : ''}`)
-                    .join(', ')}
-                </span>
-              </div>
-            </div>
-          )}
+          <div className="pt-2 border-t border-slate-800/70 text-[11px] text-slate-400 flex items-center gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            <span>Operational parameters verified by Gemini factual grounding.</span>
+          </div>
         </div>
       </div>
 
-      {/* 3. CRITICAL INFORMATION GAPS CARD */}
+      {/* 3. CRITICAL INFORMATION GAPS (Compact Prioritized List) */}
       {missingInformation.length > 0 && (
         <section
           aria-labelledby={`missing-info-title-${result.id}`}
-          className="rounded-[26px] border border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/10 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.04)] backdrop-blur-xl animate-entrance-stagger-2 space-y-3"
+          className="rounded-2xl border border-amber-500/30 bg-amber-950/15 p-4 sm:p-5 shadow-sm space-y-3 animate-entrance-stagger-2"
         >
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300">
-              <FileQuestion className="h-4 w-4" aria-hidden="true" />
-            </div>
-            <div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                <FileQuestion className="h-4 w-4" aria-hidden="true" />
+              </div>
               <h3
                 id={`missing-info-title-${result.id}`}
-                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200"
+                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-amber-300"
               >
-                Critical Information Gaps (Follow-up Required)
+                Critical Information Gaps (Confirm Before Committing Assets)
               </h3>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                Responders must confirm these missing parameters before dispatching life-safety units.
-              </p>
             </div>
+            <span className="text-[11px] text-amber-400/80 font-semibold">
+              {missingInformation.length} Actionable Gaps
+            </span>
           </div>
 
-          <ul className="space-y-2 pl-2 list-none text-xs" role="list">
+          <ul className="space-y-2 list-none text-xs" role="list">
             {missingInformation.map((info, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-2.5 rounded-xl bg-white/70 dark:bg-slate-900/70 p-3 border border-amber-500/20 text-slate-700 dark:text-slate-300"
+                className="flex items-start gap-2.5 rounded-xl bg-slate-900/90 p-3 border border-amber-500/20 text-slate-300"
               >
-                <span className="mt-0.5 h-2 w-2 rounded-full bg-amber-500 shrink-0" />
+                <span className="mt-1 h-2 w-2 rounded-full bg-amber-400 shrink-0" />
                 <div className="space-y-0.5 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <strong className="text-slate-900 dark:text-slate-100 font-bold">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <strong className="text-slate-100 font-bold">
                       {info.field}:
                     </strong>
-                    <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                    <span className="text-[10px] uppercase font-bold px-2 py-0.2 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
                       [{info.criticality}]
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <p className="text-xs text-slate-300 leading-relaxed">
                     {info.description}
                   </p>
                 </div>
@@ -243,81 +382,32 @@ export function AnalysisResultCard({
         </section>
       )}
 
-      {/* 4. VERIFICATION EVIDENCE & SOURCE CITATIONS */}
-      <div className="rounded-[26px] border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.05)] backdrop-blur-xl animate-entrance-stagger-3 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-            <Quote className="h-4 w-4 text-teal-600" />
-            <span>Verification & Grounding Evidence</span>
-          </h3>
-          <span className="text-[11px] text-slate-400 font-mono">
-            Direct Dispatch Extraction
-          </span>
-        </div>
-
-        <div className="space-y-2 text-xs">
-          <p className="text-slate-700 dark:text-slate-300">
-            <strong>Verification Rationale:</strong> {verification.reasoning}
-          </p>
-
-          {sources && sources.length > 0 ? (
-            <div className="space-y-1.5 pt-1">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                Source Citations from Input:
-              </span>
-              <div className="space-y-1">
-                {sources.map((src, i) => (
-                  <blockquote
-                    key={i}
-                    className="border-l-2 border-emerald-500 pl-3 py-1 text-[11px] italic text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/40 rounded-r-lg"
-                  >
-                    &ldquo;{src.quote}&rdquo; —{' '}
-                    <span className="text-emerald-700 dark:text-emerald-400 font-medium font-sans not-italic">
-                      Relevance: {src.relevance}
-                    </span>
-                  </blockquote>
-                ))}
-              </div>
-            </div>
-          ) : rawInput ? (
-            <div className="pt-1">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">
-                Original Input Statement:
-              </span>
-              <p className="border-l-2 border-emerald-500/60 pl-3 py-1 text-xs italic text-slate-600 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-950/40 rounded-r-lg font-mono">
-                &ldquo;{rawInput}&rdquo;
-              </p>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      {/* 5. RECOMMENDED ACTIONABLE NEXT STEPS */}
+      {/* 4. RECOMMENDED ACTIONABLE NEXT STEPS (Ordered by Priority) */}
       {recommendedActions.length > 0 && (
         <section
           aria-labelledby={`actions-title-${result.id}`}
-          className="rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/90 p-6 sm:p-8 shadow-[0_16px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl animate-entrance-stagger-4 space-y-4"
+          className="rounded-2xl sm:rounded-3xl border border-slate-800 bg-slate-900/90 p-5 sm:p-6 shadow-md backdrop-blur-xl animate-entrance-stagger-3 space-y-3.5"
         >
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600">
-                <ArrowRightCircle className="h-4.5 w-4.5" aria-hidden="true" />
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400">
+                <ArrowRightCircle className="h-4 w-4" aria-hidden="true" />
               </div>
               <h3
                 id={`actions-title-${result.id}`}
-                className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100"
+                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-100"
               >
                 Prioritized Action Plan
               </h3>
             </div>
             {isActionInteractive && (
-              <span className="text-[11px] text-slate-500 font-medium">
+              <span className="text-[11px] text-slate-400">
                 Click status pill to cycle: Pending → In Progress → Completed
               </span>
             )}
           </div>
 
-          <ol className="space-y-3 text-xs" role="list">
+          <ol className="space-y-2.5 text-xs" role="list">
             {recommendedActions.map((action, idx) => {
               const isCompleted = action.status === 'completed';
               const isInProgress = action.status === 'in_progress';
@@ -325,47 +415,47 @@ export function AnalysisResultCard({
               return (
                 <li
                   key={action.id || idx}
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border p-4 transition-all card-hover-lift ${
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border p-3.5 transition-all ${
                     isCompleted
-                      ? 'border-emerald-500/40 bg-emerald-50/20 dark:bg-emerald-950/20 opacity-80'
+                      ? 'border-emerald-500/30 bg-emerald-950/20 opacity-80'
                       : isInProgress
-                      ? 'border-sky-500/40 bg-sky-50/20 dark:bg-sky-950/20'
-                      : 'border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 shadow-2xs'
+                      ? 'border-sky-500/30 bg-sky-950/20'
+                      : 'border-slate-800 bg-slate-950/60 shadow-xs'
                   }`}
                 >
                   <div className="space-y-1 flex-1">
-                    <div className="font-bold text-sm text-slate-900 dark:text-slate-100 flex flex-wrap items-center gap-2">
-                      <span className={isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : ''}>
+                    <div className="font-bold text-sm text-slate-100 flex flex-wrap items-center gap-2">
+                      <span className={isCompleted ? 'line-through text-slate-500' : ''}>
                         {idx + 1}. {action.title}
                       </span>
                       {action.targetEntity && (
-                        <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-[11px] font-medium text-slate-300 border border-slate-700">
                           Target: {action.targetEntity}
                         </span>
                       )}
                     </div>
                     <p
-                      className={`text-xs ${
+                      className={`text-xs leading-relaxed ${
                         isCompleted
-                          ? 'line-through text-slate-400 dark:text-slate-500'
-                          : 'text-slate-600 dark:text-slate-300'
+                          ? 'line-through text-slate-500'
+                          : 'text-slate-300'
                       }`}
                     >
                       {action.description}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/80">
                     {isActionInteractive && onActionToggle && (
                       <button
                         type="button"
                         onClick={() => onActionToggle(action.id, action.status)}
-                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase transition-all cursor-pointer border shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 flex items-center gap-1 ${
+                        className={`rounded-full px-3 py-1 text-xs font-bold uppercase transition-all cursor-pointer border flex items-center gap-1 ${
                           isCompleted
-                            ? 'bg-emerald-600 text-white border-emerald-600'
+                            ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
                             : isInProgress
-                            ? 'bg-sky-600 text-white border-sky-600'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            ? 'bg-sky-600 text-white border-sky-500 shadow-xs'
+                            : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
                         }`}
                         aria-label={`Toggle action status for ${action.title}. Current status: ${action.status}`}
                       >
@@ -373,7 +463,7 @@ export function AnalysisResultCard({
                         <span>{action.status.replace(/_/g, ' ')}</span>
                       </button>
                     )}
-                    <Badge urgency={action.priority} className="text-[11px] font-bold px-2.5 py-0.5">
+                    <Badge urgency={action.priority} className="text-[11px] font-bold px-2.5 py-0.5 uppercase">
                       {action.priority.toUpperCase()}
                     </Badge>
                   </div>
@@ -383,6 +473,74 @@ export function AnalysisResultCard({
           </ol>
         </section>
       )}
+
+      {/* 5. COLLAPSIBLE ADDITIONAL CONTEXT & GROUNDING EVIDENCE */}
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/85 p-4 sm:p-5 shadow-sm space-y-3">
+        <button
+          type="button"
+          onClick={() => setShowSecondaryDetails(!showSecondaryDetails)}
+          className="flex w-full items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+          aria-expanded={showSecondaryDetails}
+          aria-controls="grounding-evidence-drawer"
+        >
+          <div className="flex items-center gap-2">
+            <Quote className="h-4 w-4 text-teal-400" />
+            <span>Verification Rationale & Source Excerpts</span>
+          </div>
+          <div className="flex items-center gap-1 text-[11px] text-emerald-400 font-semibold">
+            <span>{showSecondaryDetails ? 'Hide' : 'Inspect'}</span>
+            {showSecondaryDetails ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
+          </div>
+        </button>
+
+        {showSecondaryDetails && (
+          <div
+            id="grounding-evidence-drawer"
+            className="pt-2 border-t border-slate-800 space-y-3 text-xs animate-entrance"
+          >
+            <div className="space-y-1">
+              <strong className="text-slate-200">Verification Rationale:</strong>
+              <p className="text-slate-300 leading-relaxed bg-slate-950/50 p-2.5 rounded-xl border border-slate-800">
+                {verification.reasoning}
+              </p>
+            </div>
+
+            {sources && sources.length > 0 ? (
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Verbatim Quotes from Input:
+                </span>
+                <div className="space-y-1.5">
+                  {sources.map((src, i) => (
+                    <blockquote
+                      key={i}
+                      className="border-l-2 border-emerald-500 pl-3 py-1 text-xs italic text-slate-300 bg-slate-950/40 rounded-r-lg"
+                    >
+                      &ldquo;{src.quote}&rdquo; —{' '}
+                      <span className="text-emerald-400 not-italic font-semibold">
+                        {src.relevance}
+                      </span>
+                    </blockquote>
+                  ))}
+                </div>
+              </div>
+            ) : rawInput ? (
+              <div className="space-y-1">
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Original Raw Dispatch:
+                </span>
+                <p className="border-l-2 border-emerald-500/60 pl-3 py-1 text-xs italic text-slate-300 bg-slate-950/40 rounded-r-lg">
+                  &ldquo;{rawInput}&rdquo;
+                </p>
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
     </article>
   );
 }

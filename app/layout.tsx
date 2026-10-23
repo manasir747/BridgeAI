@@ -1,16 +1,21 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { DM_Serif_Display, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
+import { NavigationProvider } from '@/components/layout/NavigationContext';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const dmSerifDisplay = DM_Serif_Display({
+  variable: '--font-dm-serif',
   subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const playfairDisplay = Playfair_Display({
+  variable: '--font-playfair',
   subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -27,8 +32,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { NavigationProvider } from '@/components/layout/NavigationContext';
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,16 +40,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${dmSerifDisplay.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-900 dark:selection:text-emerald-200">
+      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-200">
         <NavigationProvider>
           <Header />
-          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
+          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none w-full">
             {children}
           </main>
-          <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-            <div className="mx-auto max-w-7xl px-4">
+          <footer className="border-t border-slate-800/80 py-5 text-center text-xs text-slate-400">
+            <div className="w-full px-4 sm:px-6 lg:px-10">
               BridgeAI Foundation • Open Source Societal Benefit Architecture
             </div>
           </footer>

@@ -186,31 +186,31 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
   const getCategoryIcon = (cat: AnalysisCategory) => {
     switch (cat) {
       case 'emergency_relief':
-        return <Ambulance className="h-3.5 w-3.5 text-rose-500" aria-hidden="true" />;
+        return <Ambulance className="h-3.5 w-3.5 text-rose-400" aria-hidden="true" />;
       case 'healthcare_access':
-        return <AlertTriangle className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />;
+        return <AlertTriangle className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />;
       case 'food_water_security':
-        return <Utensils className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />;
+        return <Utensils className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />;
       case 'infrastructure_damage':
-        return <Flame className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" />;
+        return <Flame className="h-3.5 w-3.5 text-orange-400" aria-hidden="true" />;
       default:
-        return <ShieldAlert className="h-3.5 w-3.5 text-teal-600" aria-hidden="true" />;
+        return <ShieldAlert className="h-3.5 w-3.5 text-teal-400" aria-hidden="true" />;
     }
   };
 
   return (
-    <div className="space-y-6 py-2 max-w-5xl mx-auto animate-entrance">
+    <div className="w-full space-y-5 py-2 animate-entrance">
       {/* Header & Backup Toolset */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-            <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-950/40 px-3 py-0.5 text-xs font-semibold text-emerald-300">
+            <Layers className="h-3.5 w-3.5 text-emerald-400" />
             <span>Triage Dossier Archives</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
             Saved Analysis Gallery
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             Search, filter, review, and reopen previous emergency dispatches and operational action plans.
           </p>
         </div>
@@ -221,10 +221,10 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
             size="sm"
             onClick={handleExportBackup}
             disabled={items.length === 0}
-            className="text-xs gap-1.5 rounded-xl border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70"
+            className="text-xs gap-1.5 rounded-xl border-slate-700 bg-slate-900/80 text-slate-200 h-8 px-3"
             aria-label="Export all history items as JSON backup"
           >
-            <Download className="h-3.5 w-3.5 text-slate-500" />
+            <Download className="h-3.5 w-3.5 text-slate-400" />
             <span>Export Backup</span>
           </Button>
 
@@ -232,10 +232,10 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
             variant="outline"
             size="sm"
             onClick={handleImportBackup}
-            className="text-xs gap-1.5 rounded-xl border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70"
+            className="text-xs gap-1.5 rounded-xl border-slate-700 bg-slate-900/80 text-slate-200 h-8 px-3"
             aria-label="Import history from JSON file"
           >
-            <Upload className="h-3.5 w-3.5 text-slate-500" />
+            <Upload className="h-3.5 w-3.5 text-slate-400" />
             <span>Import JSON</span>
           </Button>
 
@@ -243,7 +243,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
             variant="ghost"
             size="sm"
             onClick={() => loadHistory()}
-            className="text-xs gap-1 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+            className="text-xs gap-1 rounded-xl text-slate-400 hover:text-slate-100 h-8 px-2"
             aria-label="Refresh history list"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
@@ -252,21 +252,21 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
       </div>
 
       {/* Filter and Search Bar Floating Panel */}
-      <div className="rounded-[26px] border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.3)] backdrop-blur-xl space-y-4">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 shadow-sm space-y-3.5 backdrop-blur-xl">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
           {/* Search Input */}
           <div className="sm:col-span-6 relative">
             <label htmlFor="history-search-input" className="sr-only">
               Search History
             </label>
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" aria-hidden="true" />
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" aria-hidden="true" />
             <input
               id="history-search-input"
               type="text"
               placeholder="Search summaries, locations, notes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500 shadow-2xs transition-all"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500 shadow-inner transition-all h-9"
             />
           </div>
 
@@ -279,7 +279,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
               id="category-filter-select"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value as AnalysisCategory | 'all')}
-              className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 cursor-pointer shadow-2xs transition-all"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 cursor-pointer h-9 shadow-inner"
             >
               <option value="all">All Sectors</option>
               {(Object.keys(CATEGORY_METADATA) as AnalysisCategory[]).map((cat) => (
@@ -299,7 +299,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
               id="urgency-filter-select"
               value={urgencyFilter}
               onChange={(e) => setUrgencyFilter(e.target.value as UrgencyLevel | 'all')}
-              className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 cursor-pointer shadow-2xs transition-all"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 cursor-pointer h-9 shadow-inner"
             >
               <option value="all">All Urgency Levels</option>
               <option value="critical">Critical</option>
@@ -311,19 +311,19 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
         </div>
 
         {/* Filter Badges and Status */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800 text-xs">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setStarredOnly(!starredOnly)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all cursor-pointer ${
                 starredOnly
-                  ? 'border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-400 shadow-2xs'
-                  : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  ? 'border-amber-500/50 bg-amber-950/40 text-amber-300 shadow-xs'
+                  : 'border-slate-800 bg-slate-950 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
               }`}
               aria-pressed={starredOnly}
             >
-              <Star className={`h-3.5 w-3.5 ${starredOnly ? 'fill-current text-amber-500' : ''}`} />
+              <Star className={`h-3.5 w-3.5 ${starredOnly ? 'fill-current text-amber-400' : ''}`} />
               <span>Starred Only</span>
             </button>
 
@@ -336,7 +336,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                   setUrgencyFilter('all');
                   setStarredOnly(false);
                 }}
-                className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline cursor-pointer ml-1"
+                className="text-emerald-400 font-semibold hover:underline cursor-pointer ml-1"
               >
                 Clear Filters
               </button>
@@ -344,8 +344,8 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
           </div>
 
           {metrics && (
-            <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-mono">
-              <Database className="h-3 w-3" />
+            <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
+              <Database className="h-3 w-3 text-slate-500" />
               <span>
                 {metrics.itemCount} dossiers • {Math.round(metrics.estimatedBytes / 1024)} KB (
                 {metrics.percentUsed}% storage)
@@ -357,21 +357,20 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
 
       {/* Gallery List or Polished Empty State */}
       {items.length === 0 ? (
-        <div className="py-12 text-center max-w-md mx-auto space-y-6 animate-entrance">
-          {/* Empty State Composition */}
-          <div className="relative mx-auto flex h-32 w-32 items-center justify-center">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500/20 via-teal-400/15 to-transparent blur-xl" />
-            <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-[24px] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-lg">
-              <FolderOpen className="h-9 w-9 text-emerald-600" aria-hidden="true" />
+        <div className="py-10 text-center max-w-md mx-auto space-y-4 animate-entrance">
+          <div className="relative mx-auto flex h-24 w-24 items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-emerald-500/10 blur-xl" />
+            <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-800 bg-slate-900 shadow-md">
+              <FolderOpen className="h-7 w-7 text-emerald-400" aria-hidden="true" />
             </div>
           </div>
 
           {hasActiveFilters ? (
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-bold text-slate-100">
                 No Matching Results
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 No saved analyses matched your search term or active sector/urgency filters.
               </p>
               <div className="pt-2">
@@ -384,26 +383,26 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                     setUrgencyFilter('all');
                     setStarredOnly(false);
                   }}
-                  className="text-xs rounded-xl"
+                  className="text-xs rounded-xl h-8 px-3 border-slate-700 bg-slate-800"
                 >
                   Reset Filters
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="space-y-2.5">
+              <h3 className="text-xl font-bold text-slate-100">
                 No Saved Analyses Yet
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-300 max-w-sm mx-auto leading-relaxed">
                 Run your first analysis to see previous triage results, operational actions, and notes
                 saved here.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
                 <Button
                   size="lg"
                   onClick={() => onNavigateToAnalyze()}
-                  className="gap-2 text-xs sm:text-sm font-bold rounded-2xl h-11 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20"
+                  className="gap-2 text-xs sm:text-sm font-bold rounded-xl h-10 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span>Analyze a Problem</span>
@@ -412,7 +411,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                   variant="secondary"
                   size="lg"
                   onClick={handleLoadSampleAnalysis}
-                  className="gap-2 text-xs sm:text-sm font-semibold rounded-2xl h-11 px-4"
+                  className="gap-2 text-xs sm:text-sm font-semibold rounded-xl h-10 px-4 bg-slate-800 text-slate-200 hover:bg-slate-700"
                 >
                   <span>Load Sample Scenario</span>
                 </Button>
@@ -421,7 +420,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
           )}
         </div>
       ) : (
-        <div className="space-y-4" role="feed" aria-label="Analysis History Dossiers">
+        <div className="space-y-3.5" role="feed" aria-label="Analysis History Dossiers">
           {items.map((item) => {
             const { result } = item;
             const completedCount = result.recommendedActions.filter(
@@ -432,63 +431,63 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
             return (
               <article
                 key={item.id}
-                className="group relative overflow-hidden rounded-[26px] sm:rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/85 p-5 sm:p-6 transition-all card-hover-lift shadow-[0_8px_24px_rgba(15,23,42,0.04)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.25)] backdrop-blur-xl space-y-3.5"
+                className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5 transition-all card-hover-lift shadow-sm backdrop-blur-xl space-y-3"
                 aria-label={`Historical analysis: ${result.summary}`}
               >
                 {/* Top Badge Strip */}
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 px-2.5 py-0.5 text-[11px] font-mono font-bold capitalize text-slate-700 dark:text-slate-300">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800 px-2.5 py-0.5 text-[11px] font-bold capitalize text-slate-200">
                       {getCategoryIcon(result.category)}
                       <span>{result.category.replace(/_/g, ' ')}</span>
                     </span>
 
-                    <Badge urgency={result.urgency.level} className="text-[10px] font-bold px-2.5 py-0.5">
-                      {result.urgency.level.toUpperCase()} ({result.urgency.score}/10)
+                    <Badge urgency={result.urgency.level} className="text-[10px] font-bold px-2 py-0.2 uppercase">
+                      {result.urgency.level} ({result.urgency.score}/10)
                     </Badge>
 
                     {item.isStarred && (
-                      <span className="flex items-center text-amber-500" title="Starred item">
-                        <Star className="h-4 w-4 fill-current" />
+                      <span className="flex items-center text-amber-400" title="Starred item">
+                        <Star className="h-3.5 w-3.5 fill-current" />
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-xs text-slate-400 font-mono">
-                    <Clock className="h-3 w-3" />
+                  <div className="flex items-center gap-1 text-xs text-slate-400">
+                    <Clock className="h-3.5 w-3.5 text-slate-500" />
                     <span>{formatDate(item.savedAt)}</span>
                   </div>
                 </div>
 
                 {/* Summary & Raw Preview */}
-                <div>
-                  <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug">
+                <div className="space-y-1">
+                  <h2 className="text-base sm:text-lg font-bold text-slate-100 line-clamp-2 leading-snug">
                     {result.summary}
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
                     {result.rawInput}
                   </p>
                 </div>
 
                 {/* Field Notes Callout */}
                 {item.notes && (
-                  <div className="rounded-xl bg-slate-50 dark:bg-slate-950/40 p-2.5 text-xs text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-800/60">
-                    <strong className="text-slate-900 dark:text-slate-100">Field Note:</strong> {item.notes}
+                  <div className="rounded-xl bg-slate-950/60 p-2.5 text-xs text-slate-300 border border-slate-800/80 leading-relaxed">
+                    <strong className="text-slate-100">Field Note:</strong> {item.notes}
                   </div>
                 )}
 
                 {/* Footer Metrics & Actions */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                  <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-[11px]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-800/80 text-xs">
+                  <div className="flex items-center gap-3 text-slate-400 text-[11px]">
                     <span className="flex items-center gap-1 font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                       <span>
                         {completedCount}/{totalActions} Tasks Done
                       </span>
                     </span>
 
                     {result.missingInformation.length > 0 && (
-                      <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold">
+                      <span className="flex items-center gap-1 text-amber-400 font-semibold">
                         <FileQuestion className="h-3.5 w-3.5" />
                         <span>{result.missingInformation.length} Info Gaps</span>
                       </span>
@@ -500,8 +499,8 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                       variant="ghost"
                       size="sm"
                       onClick={() => handleToggleStar(item.id, item.isStarred)}
-                      className={`h-8 w-8 p-0 rounded-xl text-slate-400 hover:text-amber-500 ${
-                        item.isStarred ? 'text-amber-500' : ''
+                      className={`h-8 w-8 p-0 rounded-xl text-slate-400 hover:text-amber-400 ${
+                        item.isStarred ? 'text-amber-400' : ''
                       }`}
                       aria-label={item.isStarred ? 'Unstar this analysis' : 'Star this analysis'}
                     >
@@ -512,7 +511,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDelete(item.id)}
-                      className="h-8 w-8 p-0 rounded-xl text-slate-400 hover:text-rose-600"
+                      className="h-8 w-8 p-0 rounded-xl text-slate-400 hover:text-rose-400"
                       aria-label="Delete this analysis record"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -522,7 +521,7 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
                       variant="secondary"
                       size="sm"
                       onClick={() => onSelectResult(result)}
-                      className="gap-1.5 text-xs font-bold rounded-xl px-3 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 hover:text-emerald-700 dark:hover:text-emerald-300"
+                      className="gap-1.5 text-xs font-bold rounded-xl px-3 h-8 bg-slate-800 hover:bg-emerald-950/40 text-slate-200 hover:text-emerald-300 hover:border-emerald-500/40 border border-transparent"
                       aria-label={`Open detailed result for ${result.summary}`}
                     >
                       <span>Open Dossier</span>
@@ -538,4 +537,3 @@ export function HistorySection({ onSelectResult, onNavigateToAnalyze }: HistoryS
     </div>
   );
 }
-
