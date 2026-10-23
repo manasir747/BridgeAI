@@ -76,6 +76,8 @@ export function AnalyzeSection({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+
     setClientError(null);
     setApiError(null);
 
@@ -96,6 +98,11 @@ export function AnalyzeSection({
 
     setIsLoading(true);
 
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => {
+      abortController.abort();
+    }, 45000);
+
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -107,7 +114,10 @@ export function AnalyzeSection({
           categoryHint: category !== 'auto' ? category : undefined,
           urgencyHint: urgencyHint !== 'auto' ? urgencyHint : undefined,
         }),
+        signal: abortController.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const json = await response.json();
 
@@ -139,11 +149,20 @@ export function AnalyzeSection({
       setIsLoading(false);
       onAnalysisSuccess(analysisResult);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Network error connecting to analysis API.';
-      setApiError({
-        message,
-        isAuthOrConfig: false,
-      });
+      clearTimeout(timeoutId);
+
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setApiError({
+          message: 'The analysis request timed out after 45 seconds. Please check your network connection and try again.',
+          isAuthOrConfig: false,
+        });
+      } else {
+        const message = err instanceof Error ? err.message : 'Network error connecting to analysis API.';
+        setApiError({
+          message,
+          isAuthOrConfig: false,
+        });
+      }
       setIsLoading(false);
     }
   };

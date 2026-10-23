@@ -135,6 +135,72 @@ describe('Gemini Service Module', () => {
       expect(mockGenerateContent).toHaveBeenCalledTimes(1);
     });
 
+    it('successfully parses markdown-wrapped JSON responses from model', async () => {
+      const validMockResponse = {
+        summary: 'Emergency evacuation required.',
+        category: 'emergency_relief',
+        urgency: { level: 'high', score: 8, reasoning: 'Flooding' },
+        extractedDetails: { locations: [], entities: [], contactInfo: [], resourceNeeds: [] },
+        missingInformation: [],
+        verification: { status: 'unverified', confidenceScore: 0.8, reasoning: 'Single report' },
+        sources: [],
+        recommendedActions: [{ title: 'Deploy units', priority: 'high', description: 'Immediate' }],
+      };
+
+      const markdownWrapped = `\`\`\`json\n${JSON.stringify(validMockResponse)}\n\`\`\``;
+
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockResolvedValue({ text: markdownWrapped }),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      const result = await analyzer.analyze({ input: 'Emergency flood report on Route 9.' });
+      expect(result.summary).toBe('Emergency evacuation required.');
+      expect(result.recommendedActions[0].id).toBeDefined();
+      expect(result.recommendedActions[0].status).toBe('pending');
+    });
+
+    it('throws GeminiValidationError when model response is missing required schema fields', async () => {
+      const incompleteResponse = {
+        summary: 'Missing urgency and other required fields.',
+      };
+
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockResolvedValue({ text: JSON.stringify(incompleteResponse) }),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      await expect(
+        analyzer.analyze({ input: 'Incomplete emergency response test.' })
+      ).rejects.toThrow(GeminiValidationError);
+    });
+
+    it('throws GeminiServiceError when model response is empty', async () => {
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockResolvedValue({ text: '' }),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      await expect(
+        analyzer.analyze({ input: 'Sample emergency input longer than 10 characters' })
+      ).rejects.toThrow('Empty response received from Gemini model.');
+    });
+
+    it('throws GeminiServiceError with 404 when model is not found', async () => {
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockRejectedValue(new Error('models/gemini-not-real is not found for API version v1beta: 404')),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      await expect(
+        analyzer.analyze({ input: 'Sample emergency input longer than 10 characters' })
+      ).rejects.toThrow('was not found or is unavailable');
+    });
+
     it('throws GeminiValidationError when model response is not valid JSON', async () => {
       vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
         models: {
@@ -171,6 +237,98 @@ describe('Gemini Service Module', () => {
       await expect(
         analyzer.analyze({ input: 'Sample emergency input longer than 10 characters' })
       ).rejects.toThrow(GeminiRateLimitError);
+    });
+
+    it('throws GeminiNetworkError when network timeout occurs', async () => {
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockRejectedValue(new Error('fetch failed: ETIMEDOUT')),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      await expect(
+        analyzer.analyze({ input: 'Sample emergency input longer than 10 characters' })
+      ).rejects.toThrow('Network error while connecting to Gemini API');
+    });
+
+    it('normalizes percentage confidence scores and null fields cleanly', async () => {
+      const responseWithNullsAndPercentages = {
+        summary: 'Water main break in downtown sector.',
+        category: 'infrastructure_damage',
+        urgency: {
+          level: 'high',
+          score: 8,
+          reasoning: 'Water flooding street',
+        },
+        extractedDetails: {
+          locations: [{ name: 'Downtown Main St', address: null }],
+          entities: [{ name: 'Fire Dept', type: 'first_responder', role: null }],
+          contactInfo: [],
+          resourceNeeds: [],
+        },
+        missingInformation: [],
+        verification: {
+          status: 'verified',
+          confidenceScore: 92, // Integer percentage that needs normalization to 0.92
+          reasoning: 'City dispatch report',
+        },
+        sources: [
+          {
+            quote: 'Water main broke downtown.',
+            relevance: 'Location detail',
+            confidence: 85, // Integer percentage that needs normalization to 0.85
+          },
+        ],
+        recommendedActions: [
+          {
+            title: 'Isolate main valve',
+            description: 'Turn off shutoff valve at 4th and Main.',
+            priority: 'high',
+          },
+        ],
+      };
+
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockResolvedValue({
+            text: JSON.stringify(responseWithNullsAndPercentages),
+          }),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      const result = await analyzer.analyze({
+        input: 'Massive water main broke on Downtown Main St. Flooding street!',
+      });
+
+      expect(result.verification.confidenceScore).toBe(0.92);
+      expect(result.sources[0].confidence).toBe(0.85);
+      expect(result.extractedDetails.entities[0].type).toBe('other'); // Normalized from unrecognized 'first_responder'
+      expect(result.extractedDetails.locations[0].address).toBeUndefined(); // Null stripped
+    });
+
+    it('throws GeminiValidationError when an unrecoverable invalid enum value is present', async () => {
+      const responseWithInvalidCategory = {
+        summary: 'Alien invasion reported.',
+        category: 'unrecognized_nonexistent_category',
+        urgency: { level: 'critical', score: 10, reasoning: 'Unknown threat' },
+        extractedDetails: { locations: [], entities: [], contactInfo: [], resourceNeeds: [] },
+        missingInformation: [],
+        verification: { status: 'unverified', confidenceScore: 0.1, reasoning: 'Unsubstantiated' },
+        sources: [],
+        recommendedActions: [],
+      };
+
+      vi.spyOn(clientModule, 'getGeminiClient').mockReturnValue({
+        models: {
+          generateContent: vi.fn().mockResolvedValue({
+            text: JSON.stringify(responseWithInvalidCategory),
+          }),
+        },
+      } as unknown as ReturnType<typeof clientModule.getGeminiClient>);
+
+      await expect(
+        analyzer.analyze({ input: 'Sample emergency input longer than 10 characters' })
+      ).rejects.toThrow(GeminiValidationError);
     });
   });
 });

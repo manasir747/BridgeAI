@@ -207,10 +207,11 @@ npm run build
 | **History: Search, Filter, Reopen & Backup** | ✅ Implemented | Full-text search, sector/urgency filters, metrics, JSON import/export |
 | **Visual Polish & Motion System (Phase 2.5)** | ✅ Implemented | Warm palette, floating pill glass navbar, layered cards, motion |
 | **Workspace & Dashboard Layout Refinement (Phase 2.6)** | ✅ Implemented | Large floating workspace, compact category selector, layered results dashboard, gallery archive |
-| **Vitest & React Testing Library Suite** | ✅ Implemented | 56 automated unit and component tests passing |
-| **Map Visualization & Geocoding** | 📋 Phase 3 | OpenStreetMap/Leaflet integration for hazard mapping |
-| **Multi-Agency Dispatch Routing** | 📋 Phase 3 | Direct export to CAP (Common Alerting Protocol) |
-| **Database & Multi-User Collaboration** | 📋 Phase 4 | Postgres/Supabase real-time coordination |
+| **Functional Gemini Integration (Phase 3)** | ✅ Implemented | @google/genai SDK, prompt grounding, truthfulness directives, timeout & error handling |
+| **Vitest & React Testing Library Suite** | ✅ Implemented | 66 automated unit, route, and component tests passing |
+| **Map Visualization & Geocoding** | 📋 Phase 4 | OpenStreetMap/Leaflet integration for hazard mapping |
+| **Multi-Agency Dispatch Routing** | 📋 Phase 4 | Direct export to CAP (Common Alerting Protocol) |
+| **Database & Multi-User Collaboration** | 📋 Phase 5 | Postgres/Supabase real-time coordination |
 
 ---
 

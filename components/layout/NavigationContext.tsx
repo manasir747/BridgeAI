@@ -38,6 +38,61 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  // Restore active result and tab on initial load
+  useEffect(() => {
+    let ignore = false;
+    Promise.resolve().then(() => {
+      if (ignore) return;
+      try {
+        if (typeof window !== 'undefined') {
+          const storedResult = sessionStorage.getItem('bridgeai_active_result');
+          if (storedResult) {
+            const parsed = JSON.parse(storedResult);
+            if (parsed && typeof parsed.id === 'string') {
+              setActiveResult(parsed);
+              const storedTab = sessionStorage.getItem('bridgeai_active_tab') as AppTab | null;
+              if (storedTab === 'results') {
+                setActiveTab('results');
+              }
+            }
+          }
+        }
+      } catch {
+        // Best-effort
+      }
+    });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  // Sync active result to sessionStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        if (activeResult) {
+          sessionStorage.setItem('bridgeai_active_result', JSON.stringify(activeResult));
+        } else {
+          sessionStorage.removeItem('bridgeai_active_result');
+        }
+      }
+    } catch {
+      // Best-effort
+    }
+  }, [activeResult]);
+
+  // Sync active tab to sessionStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('bridgeai_active_tab', activeTab);
+      }
+    } catch {
+      // Best-effort
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     let ignore = false;
     getHistoryService()

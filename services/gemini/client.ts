@@ -40,6 +40,20 @@ export class GeminiValidationError extends GeminiServiceError {
   }
 }
 
+export class GeminiModelNotFoundError extends GeminiServiceError {
+  constructor(message = 'Gemini model was not found or is unavailable.') {
+    super(message, 'MODEL_NOT_FOUND', 404);
+    this.name = 'GeminiModelNotFoundError';
+  }
+}
+
+export class GeminiNetworkError extends GeminiServiceError {
+  constructor(message = 'Network error occurred while communicating with Gemini API.') {
+    super(message, 'GEMINI_NETWORK_TIMEOUT', 504);
+    this.name = 'GeminiNetworkError';
+  }
+}
+
 let cachedClient: GoogleGenAI | null = null;
 
 /**

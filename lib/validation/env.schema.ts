@@ -6,7 +6,7 @@ import { z } from 'zod';
  */
 export const serverEnvSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required on the server'),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   NEXT_PUBLIC_APP_URL: z.string().url().optional().or(z.literal('')),
 });
@@ -25,7 +25,7 @@ export function validateServerEnv(): ServerEnv {
 
   const result = serverEnvSchema.safeParse({
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-    GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
     NODE_ENV: process.env.NODE_ENV || 'development',
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   });

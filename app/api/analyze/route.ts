@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { analysisRequestSchema } from '@/lib/validation/input.schema';
 import { geminiAnalyzer } from '@/services/gemini/analyzer';
-import { GeminiServiceError } from '@/services/gemini/client';
+import { GeminiServiceError, GeminiValidationError } from '@/services/gemini/client';
 import { AnalysisResponse } from '@/types/analysis';
 
 export async function POST(request: NextRequest): Promise<NextResponse<AnalysisResponse>> {
@@ -57,9 +57,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<AnalysisR
           error: {
             code: err.code,
             message: err.message,
+            ...(err instanceof GeminiValidationError && err.validationErrors
+              ? { details: err.validationErrors }
+              : {}),
           },
         },
-        { status: err.statusCode as 400 | 401 | 422 | 429 | 500 }
+        { status: err.statusCode as 400 | 401 | 404 | 422 | 429 | 500 | 504 }
       );
     }
 
